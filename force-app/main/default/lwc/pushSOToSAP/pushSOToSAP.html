@@ -1,0 +1,235 @@
+<template>
+
+   <lightning-quick-action-panel>
+       <template if:true={showSpinner}>
+           <div class="exampleHolder slds-align_absolute-center">
+               <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+           </div>
+       </template>
+
+       <template if:false={showSpinner}>
+           <template if:true={show1stPage}>
+
+                <template if:true={isBilling_ShippingAccount}>
+                    <lightning-quick-action-panel header="Update Account Details"> 
+                        <lightning-record-edit-form record-id={accRecId} object-api-name="Account" onsuccess={handleAccountBillingAndShipping}>
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_1-of-2">
+                                    <template for:each={accountMissingFieldList} for:item="mfl">
+                                        <lightning-input-field key={mfl} field-name={mfl}>
+                                        </lightning-input-field>
+                                    </template>
+                                </div>
+                                <!-- <div class="slds-col slds-size_1-of-2">
+                                    <template if:true={showUserField}>
+                                        <lightning-input type="text" variant="standard" name="UserCode" label="User SAP Code" placeholder="type here..." value={userSapCode} onchange={handleChange}></lightning-input>
+                                    </template>
+                                    <template if:true={showBhField}>
+                                        <lightning-input type="text" variant="standard" name="BHCode" label="BH SAP Code" placeholder="type here..." value={bhSapCode} onchange={handleChange}></lightning-input>
+                                    </template>
+                                </div> -->
+                            </div>
+                            <div class="slds-align_absolute-center slds-border_top">
+                                <lightning-button class="slds-m-top_small" variant="brand" type="submit" name="update" label="Update"></lightning-button>&nbsp;&nbsp;
+                                <lightning-button  class="slds-m-top_small" variant="neutral" label="Cancel" onclick={closeModal} ></lightning-button>
+                            </div>
+                        </lightning-record-edit-form>                         
+                    </lightning-quick-action-panel>
+                </template>
+
+                <template if:true={isAccBilling_ShippigCustomer}>
+                    <template if:true={showAccountOnScreen}>
+                        <lightning-quick-action-panel header="Update Billing Account Details"> 
+                            <lightning-record-edit-form record-id={accRecId} object-api-name="Account" onsuccess={handleAccountBillingAndCustomerShipping_Account}>
+                                <div class="slds-grid slds-gutters">
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <template for:each={accountMissingFieldList} for:item="mfl">
+                                            <lightning-input-field key={mfl} field-name={mfl}>
+                                            </lightning-input-field>
+                                        </template>
+                                    </div>
+                                </div>
+                                <div class="slds-align_absolute-center slds-border_top">
+                                    <lightning-button class="slds-m-top_small" variant="brand" type="submit" name="update" label="Update"></lightning-button>&nbsp;&nbsp;
+                                    <lightning-button  class="slds-m-top_small" variant="neutral" label="Cancel" onclick={closeModal} ></lightning-button>
+                                </div>
+                            </lightning-record-edit-form>                          
+                        </lightning-quick-action-panel>
+                    </template>
+
+                    <template if:true={showCustAddrssOnShippingScreen}>
+                    <!-- Customer Address  -->
+                        <lightning-quick-action-panel header="Update Shipping Customer Address"> 
+                            <lightning-record-edit-form record-id={shippingDispRecId} object-api-name="Dispatch_Address__c" onsuccess={handleAccountBillingAndCustomerShipping_CustAddr} onerror={handleError}>
+                                <div class="slds-grid slds-gutters">
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <template for:each={shippingCustMissingFieldList} for:item="mfl">
+                                            <lightning-input-field key={mfl} field-name={mfl}>
+                                            </lightning-input-field>
+                                        </template>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="slds-align_absolute-center slds-border_top">
+                                    <lightning-button class="slds-m-top_small" variant="brand" type="submit" name="update" label="Update"></lightning-button>&nbsp;&nbsp;
+                                    <lightning-button  class="slds-m-top_small" variant="neutral" label="Cancel" onclick={closeModal} ></lightning-button>
+                                </div>
+                            </lightning-record-edit-form> 
+                    </lightning-quick-action-panel>
+                    </template>
+                </template>
+
+                <template if:true={isBillingCustomer_AccShipping}>
+                    <template if:true={showAccountOnScreen}>
+                        <lightning-quick-action-panel header="Update Shipping Account Details"> 
+                            <lightning-record-edit-form record-id={accRecId} object-api-name="Account" onsuccess={handleCustomerBillingAndAccountShipping_Account}>
+                                <div class="slds-grid slds-gutters">
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <template for:each={accountMissingFieldList} for:item="mfl">
+                                            <lightning-input-field key={mfl} field-name={mfl}>
+                                            </lightning-input-field>
+                                        </template>
+                                    </div>
+                                </div>
+                                <div class="slds-align_absolute-center slds-border_top">
+                                    <lightning-button class="slds-m-top_small" variant="brand" type="submit" name="update" label="Update"></lightning-button>&nbsp;&nbsp;
+                                    <lightning-button  class="slds-m-top_small" variant="neutral" label="Cancel" onclick={closeModal} ></lightning-button>
+                                </div>
+                            </lightning-record-edit-form>                          
+                        </lightning-quick-action-panel>
+                    </template>
+
+                    <template if:true={showCustAddrssOnBillingScreen}>
+                        <lightning-quick-action-panel header="Update Billing Customer Address"> 
+                            <lightning-record-edit-form record-id={billingDispRecId} object-api-name="Dispatch_Address__c" onsuccess={handleCustomerBillingAndAccountShipping_CustAddr} onerror={handleError}>
+                                <div class="slds-grid slds-gutters">
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <template for:each={billingCustMissingFieldList} for:item="mfl">
+                                            <lightning-input-field key={mfl} field-name={mfl}>
+                                            </lightning-input-field>
+                                        </template>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="slds-align_absolute-center slds-border_top">
+                                    <lightning-button class="slds-m-top_small" variant="brand" type="submit" name="update" label="Update"></lightning-button>&nbsp;&nbsp;
+                                    <lightning-button  class="slds-m-top_small" variant="neutral" label="Cancel" onclick={closeModal} ></lightning-button>
+                                </div>
+                            </lightning-record-edit-form>
+                        </lightning-quick-action-panel>
+                    </template>
+
+                </template>
+
+                <template if:true={isCustomerBilling_Shipping}>
+
+                    <template if:true={showCustAddrssOnBillingScreen}>
+                        <lightning-quick-action-panel header="Update Billing Customer Address"> 
+                            <template if:false={showAccountOnScreen}>
+                                <lightning-record-edit-form record-id={billingDispRecId} object-api-name="Dispatch_Address__c" onsuccess={handleCustomerBilling} onerror={handleError}>
+                                    <div class="slds-grid slds-gutters">
+                                        <div class="slds-col slds-size_1-of-2">
+                                            <template for:each={billingCustMissingFieldList} for:item="mfl">
+                                                <lightning-input-field key={mfl} field-name={mfl}>
+                                                </lightning-input-field>
+                                            </template>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-2">
+                                            <template if:true={showDlvryPlantField}>
+                                                <lightning-combobox name="dlvryPlant" label="Delivery Plant" value={dlvryPlantVal} options={dlvryPlantList} onchange={handleChange} ></lightning-combobox>                           
+                                            </template>
+                                            <template if:true={showCustTypeField}>
+                                                <lightning-combobox name="custType" label="Customer Type" value={custTypeVal} options={custTypeList} onchange={handleChange} ></lightning-combobox>                           
+                                            </template>
+                                            <template if:true={showAccSegField}>
+                                                <lightning-combobox name="accSeg" label="Account Segment" value={accSegVal} options={accSegList} onchange={handleChange} ></lightning-combobox>                           
+                                            </template>
+                                            <template if:true={showTaxCollect}>
+                                                <lightning-combobox name="taxCollect" label="Tax Collected" value={taxCollectVal} options={taxCollectList} onchange={handleChange} ></lightning-combobox>                           
+                                            </template>
+                                            <template if:true={showPaymentTerms}>
+                                                <lightning-combobox name="paymentTerms" label="Payment Terms" value={paymentTermsVal} options={paymentTermsList} onchange={handleChange} ></lightning-combobox>                           
+                                            </template>
+                                            <template if:true={showTransportTerms}>
+                                                <lightning-combobox name="transportTerms" label="Transportation Terms" value={transportTermsVal} options={transportTermsList} onchange={handleChange} ></lightning-combobox>                           
+                                            </template>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                    <div class="slds-align_absolute-center slds-border_top">
+                                        <lightning-button class="slds-m-top_small" variant="brand" type="submit" name="update" label="Update"></lightning-button>&nbsp;&nbsp;
+                                        <lightning-button  class="slds-m-top_small" variant="neutral" label="Cancel" onclick={closeModal} ></lightning-button>
+                                    </div>
+                                </lightning-record-edit-form> 
+                            </template>
+                            <template if:true={showAccountOnScreen}>
+                                <div class="slds-grid slds-gutters">
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <template if:true={showTaxCollect}>
+                                            <lightning-combobox name="taxCollect" label="Tax Collected" value={taxCollectVal} options={taxCollectList} onchange={handleChange} ></lightning-combobox>                           
+                                        </template>
+                                        <template if:true={showPaymentTerms}>
+                                            <lightning-combobox name="paymentTerms" label="Payment Terms" value={paymentTermsVal} options={paymentTermsList} onchange={handleChange} ></lightning-combobox>                           
+                                        </template>
+                                        <template if:true={showTransportTerms}>
+                                            <lightning-combobox name="transportTerms" label="Transportation Terms" value={transportTermsVal} options={transportTermsList} onchange={handleChange} ></lightning-combobox>                           
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <template if:true={showDlvryPlantField}>
+                                            <lightning-combobox name="dlvryPlant" label="Delivery Plant" value={dlvryPlantVal} options={dlvryPlantList} onchange={handleChange} ></lightning-combobox>                           
+                                        </template>
+                                        <template if:true={showCustTypeField}>
+                                            <lightning-combobox name="custType" label="Customer Type" value={custTypeVal} options={custTypeList} onchange={handleChange} ></lightning-combobox>                           
+                                        </template>
+                                        <template if:true={showAccSegField}>
+                                            <lightning-combobox name="accSeg" label="Account Segment" value={accSegVal} options={accSegList} onchange={handleChange} ></lightning-combobox>                           
+                                        </template>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="slds-align_absolute-center slds-border_top">
+                                    <lightning-button class="slds-m-top_small" variant="brand" name="update" label="Update" onclick={handleCustomerBilling}></lightning-button>&nbsp;&nbsp;
+                                    <lightning-button  class="slds-m-top_small" variant="neutral" label="Cancel" onclick={closeModal} ></lightning-button>
+                                </div>
+                            </template>
+                        </lightning-quick-action-panel>
+                    </template>
+
+                    <template if:true={showCustAddrssOnShippingScreen}>
+                        <lightning-quick-action-panel header="Update Shipping Customer Address"> 
+                            <lightning-record-edit-form record-id={shippingDispRecId} object-api-name="Dispatch_Address__c" onsuccess={handleCustomerShipping} onerror={handleError}>
+                                <div class="slds-grid slds-gutters">
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <template for:each={shippingCustMissingFieldList} for:item="mfl">
+                                            <lightning-input-field key={mfl} field-name={mfl}>
+                                            </lightning-input-field>
+                                        </template>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="slds-align_absolute-center slds-border_top">
+                                    <lightning-button class="slds-m-top_small" variant="brand" type="submit" name="update" label="Update"></lightning-button>&nbsp;&nbsp;
+                                    <lightning-button  class="slds-m-top_small" variant="neutral" label="Cancel" onclick={closeModal} ></lightning-button>
+                                </div>
+                            </lightning-record-edit-form> 
+                        </lightning-quick-action-panel>
+                    </template>
+
+                </template>
+           </template>
+
+           <template if:false={show1stPage}>
+               <lightning-card style="height: 100%;width: 100%;">
+                   <lightning-card>
+                       <div align="center">
+                           <div class="loader"></div>
+                           Please wait! Sending Notification...
+                       </div>
+                   </lightning-card>
+           </lightning-card>
+           </template>       
+       </template>
+
+   </lightning-quick-action-panel>
+</template>

@@ -1,0 +1,44 @@
+.abc {
+        width: 80%;
+        overflow-x: scroll;
+        margin-left: 15em;
+        overflow-y: visible;
+        padding: 0;
+      }
+      
+      .headcol {
+        position: absolute;
+        width: 15em;
+        left: 0;
+       margin-top:25px;
+       
+      }
+
+      .rowcell {
+        width: 80%;
+        overflow-x: scroll;
+        margin-left: 15em;
+        overflow-y: visible;
+        padding: 0;
+      }
+
+      /* .abc {
+        width: 80%;
+        overflow-x: scroll;
+        margin-left: 15em;
+        overflow-y: visible;
+        padding: 0;
+      }
+      
+      .headcol {
+        position: absolute;
+        width: 15em;
+        left: 0;
+       margin-top:25px;
+       
+      }*/
+      
+      /* .long {   
+        letter-spacing: 0.1em;
+      }
+       */

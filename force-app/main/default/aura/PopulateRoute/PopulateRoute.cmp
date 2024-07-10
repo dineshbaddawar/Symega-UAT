@@ -1,0 +1,107 @@
+<aura:component
+                implements="lightning:actionOverride,force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+                access="global" controller="TodayTaskAuraController">
+    <!-- call doInit function on component load -->
+    <aura:handler name="init" value="this" action="{!c.doInit}" />
+    
+    <!-- aura attributes-->
+    <aura:attribute name="listControllingValues" type="list" default="[]"
+                    description="to store controller field values" />
+    <aura:attribute name="listDependingValues" type="list" default="['--- None ---']"
+                    description="to store dependent field values" />
+    <aura:attribute name="depnedentFieldMap" type="map"
+                    description="map to store dependent values with controlling value" />
+    <aura:attribute name="bDisabledDependentFld" type="boolean" default="true" />
+    <aura:attribute name="routeMap" type="Map" />
+    <aura:attribute name="selectedRoute" type="Route_Master__c" />
+    <aura:attribute name="salesUsers" type="User[]" />
+    <aura:attribute name="objDetail" type="Route__c" default="{'sobjectType' : 'Route__c'}" />
+    <aura:attribute name="controllingFieldAPI" type="string" default="State__c"
+                    description="store field API name of Controller field" />
+    <aura:attribute name="dependingFieldAPI" type="string" default="City__c"
+                    description="store field API name of dependent field" />
+    <aura:attribute name="selState" type="string" />
+    <aura:attribute name="selCity" type="string" />
+    <aura:attribute name="selUser" type="String"/>
+    <aura:attribute name="state" type="String"/>
+    <aura:attribute name="city" type="String"/>
+    <aura:attribute name="selRouteNameId" type="String"/>
+    <aura:attribute name="RouteObjectList" type="list" default="[]" />
+    <aura:attribute name="loaded" type="Boolean" default="false" />
+    <aura:attribute name="isModalOpen" type="Boolean" default="true" />
+    
+    <aura:attribute name="showCreateRouteMaster" type="Boolean" default="false" />
+    <aura:attribute name="showRouteName" type="Boolean" default="false" />
+    
+    <aura:handler name="sampleCmpEvent" event="c:SampleComponentEvent"
+                  action="{!c.handleComponentEvent}"/>
+    <lightning:navigation aura:id="navService"/>
+    
+    <aura:if isTrue="{!not(v.showCreateRouteMaster)}">
+        <aura:if isTrue="{! v.loaded }">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closeModel }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Tag Route To User</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                        <lightning:card aura:id="mainCard">
+                            <lightning:button variant="brand" label="Create Master Route" title="Brand action" onclick="{! c.toggleRouteMaster }" />
+                            
+                            <!--Controller Field-->
+                            <lightning:layout >
+                                <lightning:layoutItem size="5" padding="around-small">
+                                    <lightning:select name="controllerFld" value="{!v.objDetail.State__c}" label="State"
+                                                      onchange="{!c.onControllerFieldChange}">
+                                        <aura:iteration items="{!v.listControllingValues}" var="val">
+                                            <option value="{!val}">{!val}</option>
+                                        </aura:iteration>
+                                    </lightning:select>
+                                </lightning:layoutItem>
+                                
+                                <!--Dependent Field-->
+                                <lightning:layoutItem size="5" padding="around-small">
+                                    <lightning:select name="dependentFld" value="{!v.objDetail.City__c}" label="City"
+                                                      disabled="{!v.bDisabledDependentFld}" onchange="{!c.onCityFieldChange}">
+                                        <aura:iteration items="{!v.listDependingValues}" var="val">
+                                            <option value="{!val}">{!val}</option>
+                                        </aura:iteration>
+                                    </lightning:select>
+                                </lightning:layoutItem>
+                            </lightning:layout>
+                            
+                            
+                            <aura:if isTrue="{!v.showRouteName}">
+                                <lightning:layout>
+                                    <lightning:layoutItem size="5" padding="around-small">
+                                        <c:customLookup1 objectName="Route_Master__c" fieldName="Name" iconName="standard:account" label="Route Name" value="{!v.objDetail.Route_Master__c}" selectRecordId="{!v.selRoute}" city = "{!v.selCity}" state = "{!v.selState}"/>
+                                    </lightning:layoutItem>
+                                    
+                                    <lightning:layoutItem size="5" padding="around-small">
+                                        <c:customLookup1 objectName="User" fieldName="Name" iconName="standard:user" label="Sales User" value="{!v.objDetail.Sales_User__c}" selectRecordId="{!v.selUser}" />
+                                    </lightning:layoutItem>
+                                </lightning:layout>
+                            </aura:if>
+                        </lightning:card>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning:button label="Cancel" onclick="{!c.closeModel}" />
+                        <lightning:button label="Save" variant="brand" onclick="{!c.saveDataToRouteObject}" />
+                    </footer>
+                </div>
+            </section>
+            <aura:set attribute="else">
+                <lightning:spinner alternativeText="Loading" />
+            </aura:set>
+        </aura:if>
+        
+    </aura:if>
+    <aura:if isTrue="{!v.showCreateRouteMaster}">
+        <c:createRouteMaster aura:id="createRouteMaster" />
+    </aura:if>
+</aura:component>

@@ -1,0 +1,930 @@
+<!-- /**
+* @author [Dinesh Baddawar]
+* @email dinesh.b@utilitarianLab.com
+* @create date 2024-07-05 21:01:08
+* @modify date 2024-07-05 21:01:08
+* @desc [New Performa Invoice Temp]
+*/ -->
+
+<apex:page applyHtmlTag="false" sidebar="false" showHeader="false" cache="true" docType="html-5.0" renderAs="pdf" controller="PDFPerformaInvoiceHelper">
+    <html>
+        <head>
+            <style type="text/css">
+                @page {
+                padding-left: 3px;    
+                padding-right: 3px;      
+                margin-top:0.5cm;
+                }
+                th {  
+                font-weight: bold;
+                text-align: center;
+                color: black;
+                padding: 8px;
+                }
+                td {    
+                font-size: 15px;
+                text-align: left;
+                padding: 8px;
+                }
+                table{
+                border-collapse: collapse;
+                }
+                table, th, td {
+                border: 1px solid black;
+                }
+                .c1{
+                position: absolute;
+                left: 10px;
+                }
+                .c2{
+                position: absolute;
+                left: 253px;
+                }
+                .c3{
+                position: absolute;
+                left: 427px;
+                }
+                .vl {
+               
+               
+                position: absolute;
+                right: 4%;
+                margin-left: -100px;
+                top: 30px;
+                }
+                .line {
+                border-bottom: 1px solid;
+                margin-top:8px;
+                margin-left:-8px;
+                width:107%;
+                }
+            </style>
+        </head>
+        
+        <body>
+            <center><b>PROFORMA INVOICE</b></center>
+            <table style="width:100%; table-layout: fixed;">
+                <tr>
+                    <td style="">
+                        <div id="theImage">
+                            
+                        </div>
+                        <div style=" font-size: 10px;">
+                            <span style="">Exporter</span>  <br/>
+                            <b>{!customWrap.company}<br/>
+                                {!customWrap.Address2}<br/>
+                                {!customWrap.Address3}<br/>
+                                {!customWrap.Address4}<br/>
+                                {!customWrap.Address5}
+                            </b>
+                        </div>
+                    </td>    
+                    <td style="width:40%">
+                        <div style="font-size: 12px; margin-top: -8px; margin-left: -2%;">
+                            <b>Invoice No.</b>
+                            <br/>{!customWrap.oppRecDetails.Fiscal_Year__c}
+                        </div>
+                        <div class="vl">
+                            <div  style="font-size: 12px; margin-left: 3px;">
+                                <b>Date 1</b><br/>
+                                12/12/2004
+                            </div>
+                        </div>
+                        <div class="vl">
+                            <div  style="font-size: 12px; margin-left: 3px;">
+                                <b>Date 1</b><br/>
+                                12/12/2004
+                            </div>
+                        </div>
+                        <div class="line"></div>
+                        <div style="font-size: 12px; margin-left: -2%; margin-top: 0px;">
+                            <b>Buyer's Order No</b><br/>
+                            DFG4567   
+                        </div>
+                        <div style="font-size: 12px; margin-left: -2%; margin-top: 0px;">
+                            <b>Date</b><br/>
+                            DFG4567
+                        </div>
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td style="">
+                        <div id="theImage">
+                            
+                        </div>
+                        <div style=" font-size: 10px;">
+                            <span style="">Consignee</span>  <br/>
+                            <b>{!customWrap.company}<br/>
+                                {!customWrap.Address2}<br/>
+                                {!customWrap.Address3}<br/>
+                                {!customWrap.Address4}<br/>
+                                {!customWrap.Address5}
+                            </b>
+                        </div>
+                    </td>    
+                    <td style="">
+                        <div id="theImage">
+                            
+                        </div>
+                        <div style=" font-size: 10px;">
+                            <span style="">Buyer (if other than consignee)</span>  <br/>
+                            <b>{!customWrap.company}<br/>
+                                {!customWrap.Address2}<br/>
+                                {!customWrap.Address3}<br/>
+                                {!customWrap.Address4}<br/>
+                                {!customWrap.Address5}
+                            </b>
+                        </div>
+                    </td>  
+                </tr>
+            </table>
+            
+            
+            <table style="width:100%; font-family: Dialog; table-layout: fixed;"> 
+                <tr>
+                    <td style="width:35%; font-size: 10px;">
+                        <div style=" margin-top: -9px; margin-left: -2.5%;">
+                            <b>Pre - Carriage by</b><br/>{!customWrap.oppRecDetails.Pre_carriage_By__c}
+                        </div>
+                    </td>
+                    <td style="width:25%; font-size: 10px;">
+                        <div style="margin-top: -10px; margin-left: -4%;">
+                            <b>Place of Reciept by Pre - Carrier</b><br/>{!customWrap.oppRecDetails.Place_of_Reciept_by_Pre_Carrier__c}
+                        </div>
+                    </td>
+                    
+                    <td style="width:40%; font-size: 10px;">
+                        <div style="margin-top: -9px; margin-left: -2%;">
+                            <b >Country of Origin of goods</b><br/>India
+                        </div>
+                    </td>
+                </tr>
+                
+                <tr> 
+                    <td style="width:35%; font-size: 10px;">
+                        <div style="margin-top: -11px; margin-left: -2.5%;">
+                            <b>Port Of Discharge</b><br/>{!customWrap.oppRecDetails.Port_of_Discharge__c}
+                        </div>
+                    </td>
+                    <td style="width:25%; font-size: 10px;">
+                        <div style="margin-top: -8.5px; margin-left: -4%;">
+                            <b>Final Destination</b><br/>
+                        </div>
+                    </td>  
+                    <td style="width:40%; font-size: 10px;">
+                        <div style="margin-top: -9px; margin-left: -2%;">
+                            <b>Country of Final Destination</b><br/>{!customWrap.oppRecDetails.Account.ShippingCountry}
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:35%; font-size: 10px;">
+                        <div style="margin-top: -7.5px; margin-left: -2.5%;">
+                            <b>Vessel / Flight Name and Voy No.</b><br/>{!customWrap.oppRecDetails.Vessel_Flight_Name_Voy_No__c}<br/>
+                        </div>
+                    </td>
+                    <td style="width:25%; font-size: 10px;">
+                        <div style="margin-top: -8px; margin-left: -4%;">
+                            <b>Port Of Loading</b><br/>{!customWrap.oppRecDetails.Port_of_Loading__c}
+                        </div>
+                    </td>
+                    <td style="width:40%;font-size:10px;">
+                        <div style="margin-top: -7px; margin-left: -2%;">
+                            <b>Terms of Delivery and Payment : </b>{!customWrap.oppRecDetails.Account.Transportation_Terms__c}<br/>Payment: {!customWrap.oppRecDetails.Account.Payment_terms__c}
+                        </div>
+                    </td>
+                </tr>
+                
+            </table>
+            <!--Code By Tushar--> 
+            
+            <table style="width:100%;">
+                <tr style="font-size:10px; border: none;">
+                    <th style="width:20%; border: none;">Mark &amp; nos.</th>
+                    <th style="width:10%; border: none;">No. &amp; Kind of Pkgs.</th>
+                    <th style="width:40%; border: none;">Description of goods</th>
+                    <th style="width:10%; text-align: right; border: none;">Quantity</th>
+                    <th style="width:10%; text-align: right; border: none;">Rate</th>
+                    <th style="width:10%; text-align: right; border: none;">Amount</th>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; font-size:10px; border: none;"><b>ARSTE SAUDI ARABIA</b></td>
+                    <td style="width:10%; border: none;"></td>
+                    <td style="width:40%; font-size:10px; border: none; color: blue;"><b>HS CODE:21039040</b></td>
+                    <td style="width:10%; border: none;"></td>
+                    <td style="width:10%; border: none;"></td>
+                    <td style="width:10%; border: none;"></td>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>CARTON</b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                        <b>SUPER HOT SEASONING-70003755</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                         <div style="margin-top: -15px; margin-left: -2%;">
+                        <b>300.00</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                         <div style="margin-top: -15px; margin-left: -2%;">
+                             <b>2.70</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                         <div style="margin-top: -15px; margin-left: -2%;">
+                             <b>810.00</b>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                   <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>CARTON</b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                         <div style="margin-top: -15px; margin-left: -2%;">
+                             <b>HONEY SOY CHICKEN SEASONING-700037522</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                         <div style="margin-top: -15px; margin-left: -2%;">
+                             <b>300.00</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                         <div style="margin-top: -15px; margin-left: -2%;">
+                             <b>2.97</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                         <div style="margin-top: -15px; margin-left: -2%;">
+                             <b>891.00</b>
+                        </div>
+                    </td>
+                </tr>
+                
+                
+
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>CARTON</b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>CREAM &amp; ONION SEASONING (ASCO)-H00027110</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>300.00</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>2.65</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>795.00</b>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>CARTON</b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>SWEET HOT &amp; SOUR CREAM SEASONING-700037</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>300.00</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>2.97</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>891.00</b>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>CARTON</b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>CHEESE SEASONING-70003558</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>300.00</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>2.95</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>885.00</b>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>CARTON</b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>RED CHILLI SEASONING-70003887</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>300.00</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>3.33</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>999.00</b>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>CARTON</b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>CHILLI SEASONING-700031950</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>1000.00</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>2.78</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>2780.00</b>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            PKG: 25 KG BAG IN BOX
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>FOB TOTAL</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>8051.00</b>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>OCEAN FREIGHT ( 20 FT FCL)</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>1250.00</b>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>SFDA TESTING CHARGES (USD 200/Product)</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>1400.00</b>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>COC CHARGES</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>450.00</b>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px;margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b><u>DOX</u></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>INVOICE-</b><b style="color:blue;">CHAMBER ATTESTED</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>PACKING LIST</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>BL/AWB</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>COA</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>HEALTH CERTIFICATE-</b><b style="color:blue;">CHAMBER ATTESTED</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b>CERTIFICATE OF ORIGIN-</b><b style="color:blue;">CHAMBER ATTESTED</b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                </tr>
+                <tr style="border: none;">
+                    <td style="width:20%; border: none;"></td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:40%; font-size:10px; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                             <b style="color:Red;"><u>COC</u></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                    <td style="width:10%; font-size:10px; text-align: right; border: none;">
+                        <div style="margin-top: -15px; margin-left: -2%;">
+                            <b></b>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            
+     
+            
+            
+        </body>        
+    </html>
+    
+</apex:page>

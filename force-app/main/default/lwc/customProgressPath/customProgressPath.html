@@ -1,0 +1,7 @@
+<template>
+    <lightning-progress-indicator current-step={currentvalue} type="path" variant="base">
+        <template for:each={picklistValues} for:item="value" for:index="index">
+                    <lightning-progress-step key={value} label={value} value={value} data-index={index}></lightning-progress-step>
+                </template>
+    </lightning-progress-indicator>
+</template>

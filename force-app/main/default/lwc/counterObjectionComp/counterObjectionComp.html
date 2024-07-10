@@ -1,0 +1,43 @@
+<template>
+    <lightning-card  variant="Narrow"  title="Counter Objection" icon-name="standard:account">
+    <div class="chat-container">
+        <div class="chat-history" id="chat-history">
+            <template for:each={responseList} for:item="Resp">
+                <div key={Resp.Id} class="message-container">
+                    <div class="user-icon">
+                        <lightning-icon icon-name="action:user" size="small" class="testicon" alternative-text="User Icon"></lightning-icon>
+                    </div>
+                    <div class="message">
+                        <div class="slds-box slds-m-around_medium req">
+                            {Resp.Question__c}
+                        </div>
+                    </div>
+                </div>
+                <div key={Resp.Id} class="message-container">
+                    <div class="user-icon">
+                        <lightning-icon icon-name="action:check" size="small" class="testicon" alternative-text="User Icon"></lightning-icon>
+                    </div>
+                    <div class="message">
+                        <div class="slds-box slds-m-around_medium res">
+                            <lightning-formatted-rich-text disable-linkify value={Resp.Answers__c}></lightning-formatted-rich-text>
+                        </div>
+                    </div>
+                </div>
+            </template>
+            <template if:true={isRecognizedText}>
+                <div class="slds-box slds-m-around_medium req">
+                    {recognizedText}
+                </div>
+            </template>
+        </div>
+    </div>
+    <div class="slds-grid slds-m-around_medium">
+            <div class="slds-col slds-size_10-of-12">
+                <lightning-input  type="text" variant="standard" value={recognizedText} name="name" placeholder="Type here..." onchange={handleChange} ></lightning-input>
+            </div>
+            <div class="slds-col slds-size_2-of-12 slds-m-around_medium">
+                <lightning-button variant="brand" label="Send" title="Give Input" onclick={handleClick}></lightning-button>
+            </div>
+        </div>
+    </lightning-card>
+</template>

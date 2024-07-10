@@ -1,0 +1,16 @@
+<template>
+
+     <lightning-quick-action-panel header="Update Shipping Address">
+            <lightning-input type="text" label="Billing City"       name="shipCity"     value={shipCity}     onchange={handleChange}></lightning-input>
+            <lightning-input type="text" label="Billing Country"    name="shipCountry"  value={shipCountry}  onchange={handleChange}></lightning-input>
+            <lightning-input type="text" label="Billing Street"     name="shipStreet"   value={shipStreet}   onchange={handleChange}></lightning-input>
+            <lightning-input type="text" label="Billing State"      name="shipState"    value={shipState}    onchange={handleChange}></lightning-input>
+            <lightning-input type="text" label="Billing PostalCode" name="shipPostCode"   value={shipPostCode} onchange={handleChange}></lightning-input>
+
+        <div slot="footer">
+            <lightning-button variant="neutral" label="Cancel" onclick={closeAction}></lightning-button>
+            <lightning-button variant="brand" label="Save" class="slds-m-left_x-small" onclick={handleNext}> </lightning-button>
+        </div>
+      </lightning-quick-action-panel>
+
+</template>

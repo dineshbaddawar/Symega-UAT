@@ -1,0 +1,13 @@
+.THIS .savebutton {
+    font-size: large;
+    padding: 8px 15px;
+    cursor: pointer;
+    margin-right : 1%;
+}
+
+.THIS .cancelbutton{
+    margin-left: 2%;
+    font-size: large;
+    padding: 8px 15px;
+    cursor: pointer;    
+}

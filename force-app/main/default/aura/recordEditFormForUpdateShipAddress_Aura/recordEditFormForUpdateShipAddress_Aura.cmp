@@ -1,0 +1,4 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader" access="global" >
+	<aura:attribute name="recordId" type="Id" />
+<c:recordEditFormForUpdateShipAddress recordId ="{!v.recordId}"/>	
+</aura:component>

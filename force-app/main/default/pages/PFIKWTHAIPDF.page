@@ -1,0 +1,258 @@
+<!-- /**
+* @author [Dinesh Baddawar]
+* @email dinesh.b@utilitarianLab.com
+* @create date 2024-07-05 21:01:08
+* @modify date 2024-07-05 21:01:08
+* @desc [New Performa Invoice PFIKWTHAIPDF V1]
+*/ -->
+
+<apex:page applyHtmlTag="false" sidebar="false" showHeader="false" cache="true" docType="html-5.0" renderAs="pdf" controller="PDFPerformaInvoiceHelper">
+    <html>
+        <head>
+            <style type="text/css">
+                @page {
+                margin-right: 1cm;
+                margin-left: 1cm;
+                margin-top:0.5cm;
+                }	
+            </style>
+        </head>
+        
+        <body>
+            <center><b>PROFORMA INVOICE</b></center>
+            <table style="width:100%; table-layout: fixed; border-collapse: collapse; border: 1px solid black;">
+                <tr>
+                    <td style="width:50%; font-size: 11px; border: 1px solid black; padding: 5px;">
+                        <div style="top: 0px; margin-left:-1%;margin-top:0px">
+                            <span style="">Exporter</span> <br/>
+                            <b>{!customWrap.company}<br/>
+                                {!customWrap.Address2}<br/>
+                                {!customWrap.Address3}<br/>
+                                {!customWrap.Address4}<br/>
+                                Tel : {!symObj.Tel1__c} <br/>
+                                Mob : {!symObj.Mob__c} <br/>
+                                <span style="color:lightskyblue">EMAIL:{!symObj.Email1__c}</span>
+                            </b>
+                        </div>
+                    </td>
+                    <td style="width:50%; font-size: 12px; border: 1px solid black; padding: 8px;">
+                        <div style="margin-top: -7px; margin-left: -1%;">
+                            Invoice No. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Date
+                            <div> <b> 20001821 - &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{!TodayDate} </b></div>
+                        </div><br/>
+                        <div style="border-left: 1px solid; height: 40px; margin-left: 50%; position: static; top: -10px;">
+                            <div style="margin-top: -42px; margin-left: 2%;">
+                                Exporter's Ref. <br/>
+                                <b>GST NO. 32AAK -</b>
+                            </div>
+                        </div>
+                        <div style="height: 1px; background: black; width:362px; margin-left: -2.5%;"></div>
+                        <div style="margin-top: 2px; margin-left: -1%;">
+                            Buyer's Order No. &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; Date
+                            <div><b>EMAIL-RAR/ARSTE - &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;{!TodayDate}</b></div>
+                        </div><br/>
+                        <div style="height: 1px; background: black; width:362px; margin-left: -2.5%;"></div>
+                        <div style="margin-top: 2px; margin-left: -1%;">
+                            
+                            &nbsp;
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:50%; font-size: 12px; border: 1px solid black; padding: 5px;">
+                        <div style="top: 0px;">
+                            <span style="">Consignee</span> <br/>
+                            <apex:outputpanel rendered="{!customWrap.oppRecDetails.accShipAdr__c == TRUE}">
+                                <b>
+                                    {!customWrap.oppRecDetails.Account.Name}.<br/>
+                                    {!customWrap.oppRecDetails.Account.ShippingStreet}<br/>
+                                    {!customWrap.oppRecDetails.Account.ShippingCity} {!customWrap.oppRecDetails.Account.ShippingState},<br/>
+                                    {!customWrap.oppRecDetails.Account.ShippingCountry} - {!customWrap.oppRecDetails.Account.ShippingPostalCode} <br/>
+                                    Ph.:{!customWrap.oppRecDetails.Account.Phone} <br/>
+                                    EMAIL: - <br/>
+                                    PAN NR.:{!customWrap.oppRecDetails.Account.PAN_Number__c} &nbsp;&nbsp; EXIM CODE : -
+                                </b>
+                            </apex:outputpanel>
+                            <apex:outputpanel rendered="{!customWrap.oppRecDetails.accShipAdr__c == false}">
+                                <b>
+                                    {!customWrap.oppRecDetails.Account.Name}.<br/>
+                                    {!customWrap.oppRecDetails.Account.BillingStreet}<br/>
+                                    {!customWrap.oppRecDetails.Account.BillingCity} {!customWrap.oppRecDetails.Account.BillingState}, <br/>
+                                    {!customWrap.oppRecDetails.Account.BillingCountry} - {!customWrap.oppRecDetails.Account.BillingPostalCode} <br/>
+                                    Ph.:{!customWrap.oppRecDetails.Account.Phone} <br/>
+                                    EMAIL: - <br/>
+                                    PAN NR.:{!customWrap.oppRecDetails.Account.PAN_Number__c} &nbsp;&nbsp; EXIM CODE : -
+                                </b>
+                            </apex:outputpanel>
+                        </div>
+                    </td>
+                    <td style="width:50%; font-size: 12px; border: 1px solid black; padding: 5px;">
+                        <div style="top: 0px;margin-top: 0px;">
+                            <span style="">Buyer (if other than consignee)</span> <br/>
+                            <apex:outputpanel rendered="{!customWrap.oppRecDetails.accShipAdr__c == TRUE}">
+                                <b>
+                                    {!customWrap.oppRecDetails.Account.Name}.<br/>
+                                    {!customWrap.oppRecDetails.Account.ShippingStreet}<br/>
+                                    {!customWrap.oppRecDetails.Account.ShippingCity} {!customWrap.oppRecDetails.Account.ShippingState},<br/>
+                                    {!customWrap.oppRecDetails.Account.ShippingCountry} - {!customWrap.oppRecDetails.Account.ShippingPostalCode} <br/>
+                                    Ph.:{!customWrap.oppRecDetails.Account.Phone} <br/>
+                                    EMAIL: - <br/>
+                                    PAN NR.:{!customWrap.oppRecDetails.Account.PAN_Number__c} &nbsp;&nbsp; EXIM CODE : -
+                                </b>
+                            </apex:outputpanel>
+                            <apex:outputpanel rendered="{!customWrap.oppRecDetails.accShipAdr__c == false}">
+                                <b>
+                                    {!customWrap.oppRecDetails.Account.Name}.<br/>
+                                    {!customWrap.oppRecDetails.Account.BillingStreet}<br/>
+                                    {!customWrap.oppRecDetails.Account.BillingCity} {!customWrap.oppRecDetails.Account.BillingState}, <br/>
+                                    {!customWrap.oppRecDetails.Account.BillingCountry} - {!customWrap.oppRecDetails.Account.BillingPostalCode} <br/>
+                                    Ph.:{!customWrap.oppRecDetails.Account.Phone} <br/>
+                                    EMAIL: - <br/>
+                                    PAN NR.:{!customWrap.oppRecDetails.Account.PAN_Number__c} &nbsp;&nbsp; EXIM CODE : -
+                                </b>
+                            </apex:outputpanel>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            
+            <table style="width:100%; border: 1px solid black; border-collapse: collapse;">
+                <tr>
+                    <td style=" font-size: 12px; border: 1px solid black; padding: 5px;">
+                        Pre - Carriage by<br/>
+                        <b> {!customWrap.oppRecDetails.Pre_carriage_By__c}</b>
+                    </td>
+                    <td style=" font-size: 12px; border: 1px solid black; padding: 5px;">
+                        Port of receipt: <br/>
+                        <b>{!customWrap.oppRecDetails.Place_of_Reciept_by_Pre_Carrier__c}</b>
+                    </td>
+                    <td style=" font-size: 12px; border: 1px solid black; padding: 5px;">
+                        Country of origin <br/>
+                        <b>INDIA</b>
+                    </td>
+                    <td style=" font-size: 12px; border: 1px solid black; padding: 5px;">
+                        Country of destination <br/>
+                        <b>{!customWrap.oppRecDetails.Account.ShippingCountry}</b>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid black;font-size: 12px;padding: 5px;">Vessel/ Flight no.: <br/>
+                        <b>{!customWrap.oppRecDetails.Vessel_Flight_Name_Voy_No__c}</b>
+                    </td>
+                    <td style="border: 1px solid black;font-size: 12px;padding: 5px;">Port of loading: <br/>
+                        <b>{!customWrap.oppRecDetails.Port_of_Loading__c}</b>
+                    </td>
+                    <td colspan="2" style="border-bottom:none;border-right: 1px solid black;font-size: 12px;padding: 5px;">Terms of delivery and Payment:
+                        <br/>Terms of Delivery : <b> {!customWrap.oppRecDetails.Account.Transportation_Terms__c} </b> <br/>
+                        <b>Payment : {!customWrap.oppRecDetails.Account.Payment_terms__c} </b>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid black;font-size: 12px;padding: 5px;">Port of discharge: <br/>
+                        <b>{!customWrap.oppRecDetails.Port_of_Discharge__c}</b>
+                    </td>
+                    <td style="border: 1px solid black;font-size: 12px;padding: 5px;">Final destination:</td>
+                    <td colspan="2" style="border-bottom: 1px solid black;border-right: 1px solid black;font-size: 12px;padding: 5px;">
+                        Validity:<b>1 month from the date of Proforma Invoice -</b>
+                    </td>
+                </tr>
+            </table>
+            
+            <table style="width:100%; border: 1px solid black; border-collapse: collapse;font-size:11px;">
+                <tr style="border-bottom:none;border-right: 1px solid black;">
+                    <th style="border: 1px solid black;border-right:hidden;">Marks &amp; nos.</th>
+                    <th style="border: 1px solid black;border-right:hidden;">No. &amp; kind of pkgs. </th>
+                    <th style="border: 1px solid black;text-align:left;border-right:hidden;">Description of goods</th>
+                    <th style="border: 1px solid black;">HSN Code</th>
+                    <th style="border: 1px solid black;">Quantity(kg)</th>
+                    <th style="border: 1px solid black;">Rate(Rs.)</th>
+                    <th style="border: 1px solid black;">Amount(Rs.)</th>
+                </tr>
+                <apex:repeat value="{!customWrap.oppLines}" var="opp">
+                    <tr style="border: 1px solid black;">
+                        <td style="border: 1px solid black;border-top:hidden;border-right:hidden;"><b></b></td>
+                         <td style="border: 1px solid black;border-top:hidden;border-right:hidden;"><b></b></td>
+                        <td style="border: 1px solid black;border-top:hidden;border-right:hidden;"><b>{!opp.productDescription}</b></td>
+                        <td style="border: 1px solid black;border-top:hidden;"><b>{!opp.productHSNCode}</b></td>
+                        <td style="border: 1px solid black;border-top:hidden;"><b>{!opp.prodctQty}</b></td>
+                        <td style="border: 1px solid black;border-top:hidden;"><b>{!opp.prdouctRate}</b></td>
+                        <td style="border: 1px solid black;border-top:hidden;text-align:right;"><b>{!opp.productAmount}</b></td>
+                    </tr>
+                </apex:repeat>
+                <tr>
+                    <td style="border: 1px solid black;border-top:hidden;border-right:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;border-right:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;padding:5px;border-right:hidden;font-size:11px;"> <br/> <br/>
+                        <b>FOB TOTAL</b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;text-align:right;"><b>{!customWrap.totalAmount}</b></td>
+                </tr>
+                <tr>
+                       <td style="border: 1px solid black;border-top:hidden;border-right:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;border-right:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;padding:5px;border-right:hidden;font-size:11px;"> <b> PKG: 25 Kg. BAG IN BOX</b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b></b></td>
+                </tr>
+                <tr>
+                     <td style="border: 1px solid black;border-top:hidden;border-right:hidden;"></td>
+                     <td style="border: 1px solid black;border-top:hidden;border-right:hidden;"></td>
+                    <td  style="border: 1px solid black;border-top:hidden;padding:5px;color:red;border-right:hidden;font-size:11px;"><b>FREIGHT PAYABLE AT DESTINATION </b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b> </b></td>
+                </tr>
+                
+                <tr>
+                    <td colspan="5" style="border: 1px solid black;border-right:hidden;border-bottom:hidden;">Amount chargeable: <b style="text-transform:uppercase;">{!sumOfAmtIntoWords}</b> only</td>
+                    <td style="border: 1px solid black;border-bottom:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;text-align:right;"><b>{!customWrap.totalAmount}</b></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid black;border-right:hidden;font-size:10px;"><b>
+                        <br/>
+                        <br/>
+                        IEC No: {!symObj.IEC__c} <br/>
+                        GSTIN: {!symObj.GSTIN__c} </b>
+                    </td>
+                    <td style="border: 1px solid black;border-right:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-right:hidden;"><b></b></td>
+                     <td style="border: 1px solid black;border-right:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-right:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-right:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;"><b></b></td>
+                </tr>
+                <tr>
+                    <td colspan="5" style="border: 1px solid black;border-top:hidden;padding:5px;font-size:10px;border-right:hidden;"><b>
+                        <br/> <span><u>Bank Details for payment remittance </u></span> <br/>
+                        A/C NAME &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {!customWrap.company} <br/>
+                        BANK NAME &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{!symObj.Bank_Name__c} <br/>
+                        BANK ADDRESS &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {!symObj.Bank_Address__c} <br/>
+                        CASH CREDIT A/C NO. &nbsp; &nbsp; &nbsp; {!symObj.Cash_Credit_A_c_No__c} <br/>
+                        IFSC CODE &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {!symObj.Ifsc_Code__c} <br/>
+                        SWIFT CODE &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {!symObj.Swift_Code__c}
+                        </b></td>
+                    <td style="border: 1px solid black;border-top:hidden;border-right:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b> </b></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid black;border-right:hidden;border-top:hidden;">
+                        <span style="font-size:10px;"> <br/><br/>
+                            <b>Declaration:</b> <br/>
+                            We declare that this invoice shows the actual price of the <br/>
+                            goods described and that all particulars are true and correct.
+                        </span>
+                    </td>
+                    <td colspan="5" style="border: 1px solid black;border-right:hidden;border-top:hidden;"><img style="width:130px;height:130px;" src="{!$Resource.symegasignlogo}" alt="" /></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b></b></td>
+                </tr>
+            </table>
+            
+        </body>
+    </html>
+</apex:page>

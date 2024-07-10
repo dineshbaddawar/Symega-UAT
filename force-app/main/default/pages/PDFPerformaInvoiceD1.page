@@ -1,0 +1,171 @@
+<!--
+/**
+* @author [Dinesh Baddawar]
+* @email dinesh.b@utilitarianLab.com
+* @create date 2024-07-05 21:01:08
+* @modify date 2024-07-05 21:01:08
+* @desc [New Performa Invoice Temp]
+*/
+-->
+
+<apex:page applyHtmlTag="false" sidebar="false" showHeader="false" cache="true" docType="html-5.0" renderAs="pdf" controller="PDFPerformaInvoiceHelper">
+    <html>
+        <head>
+            <style type="text/css">
+                @page {
+                padding-left: 3px;    
+                padding-right: 3px;      
+                margin-top:0.5cm;
+                }
+            </style>
+        </head>
+        
+        <body>
+            <center><b>PROFORMA INVOICE</b></center>
+            
+            <table style="width:100%; table-layout: fixed; border-collapse: collapse; border: 1px solid black;">
+                <tr>
+                    <td style="width:50%; font-size: 12px; border: 1px solid black; padding: 5px;">
+                        <div style="top: 0px; margin-left:-1%;margin-top:-30px">
+                            <span style="">Exporter</span>  <br/>
+                            <b>{!customWrap.company}<br/>
+                                {!customWrap.Address2}<br/>
+                                {!customWrap.Address3}<br/>
+                                {!customWrap.Address4}<br/>
+                                {!customWrap.Address5}
+                            </b>
+                        </div>
+                    </td>
+                    <td style="width:50%; font-size: 12px; border: 1px solid black; padding: 8px;">
+                        <div style="margin-top: -7px; margin-left: -1%;">
+                            Invoice No.  &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; DATE 
+                            <div> <b> 20001821  &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {!TodayDate} </b></div>
+                        </div><br/>
+                        <div style="border-left: 1px solid; height: 40px; margin-left: 50%; position: static; top: -10px;">
+                            <div style="margin-top: -42px; margin-left: 2%;"> 
+                                Exporter's Ref. <br/>
+                                <b>GST NO. 32AAKCS0062P1Z6</b>
+                            </div>
+                        </div>
+                        <div style="height: 1px; background: black; width:350px; margin-left: -2.5%;"></div>
+                        <div style="margin-top: 2px; margin-left: -1%;">
+                            Buyer's Order No.  &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;  &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; DATE
+                            <div><b>EMAIL-RAR/ARSTE  &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;  &nbsp;&nbsp; {!TodayDate}</b></div>
+                        </div><br/>
+                        <div style="height: 1px; background: black; width:350px; margin-left: -2.5%;"></div>
+                        <div style="margin-top: 2px; margin-left: -1%;">
+                            Other reference(s): <br/>
+                            &nbsp;
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:50%; font-size: 12px; border: 1px solid black; padding: 5px;">
+                        <div style="top: 0px; margin-left:-1%;">
+                            <span style="">Consignee</span>  <br/>
+                            <b>{!customWrap.company}<br/>
+                                {!customWrap.Address2}<br/>
+                                {!customWrap.Address3}<br/>
+                                {!customWrap.Address4}<br/>
+                                {!customWrap.Address5}
+                            </b>
+                        </div>
+                    </td>
+                    <td style="width:50%; font-size: 12px; border: 1px solid black; padding: 5px;">
+                        <div style="top: 0px; margin-left:-1%;">
+                            <span style="">Buyer (if other than consignee)</span>  <br/>
+                            <b>{!customWrap.company}<br/>
+                                {!customWrap.Address2}<br/>
+                                {!customWrap.Address3}<br/>
+                                {!customWrap.Address4}<br/>
+                                {!customWrap.Address5}
+                            </b>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            
+            <table style="width:100%; border: 1px solid black; border-collapse: collapse;">
+                <tr>
+                    <td style=" font-size: 12px; border: 1px solid black; padding: 5px;">
+                       <b>Pre - Carriage by</b><br/>{!customWrap.oppRecDetails.Pre_carriage_By__c}
+                    </td>
+                    <td style=" font-size: 12px; border: 1px solid black; padding: 5px;">
+                        Pre-carriage by: <br/>
+                         &nbsp;
+                    </td>
+                    <td style=" font-size: 12px; border: 1px solid black; padding: 5px;">
+                        Pre-carriage by: <br/>
+                         &nbsp;
+                    </td>
+                    <td style=" font-size: 12px; border: 1px solid black; padding: 5px;">
+                        Pre-carriage by: <br/>
+                         &nbsp;
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid black;">Vessel/ Flight no.:</td>
+                    <td style="border: 1px solid black;">Port of loading: </td>
+                    <td colspan="2" style="border-bottom:none;border-right: 1px solid black;font-size: 12px;">Terms of delivery and Payment:
+                        <br/> Delivery: CFR DAMMAM SEAPORT (PALLETIZED FCL by SEA)
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid black;">Port of discharge: </td>
+                    <td style="border: 1px solid black;">Final destination:</td>
+                    <td colspan="2" style="border-bottom: 1px solid black;border-right: 1px solid black;font-size: 12px;">Payment: D/A 60 DAYS FROM THE DATE OF BL/AWB <br/>
+                        LEAD TIME: 6 WEEKS FROM THE DATE OF ORDER CONFIRMATION
+                    </td>
+                </tr>
+            </table>
+
+             <table style="width:100%; border: 1px solid black; border-collapse: collapse;font-size:12px;">
+                <tr style="border-bottom:none;border-right: 1px solid black;">
+                    <td style="border: 1px solid black;text-align:left;">Description of goods</td>
+                    <td style="border: 1px solid black;">HSN Code</td>
+                    <td style="border: 1px solid black;">Quantity</td>
+                    <td style="border: 1px solid black;">Rate</td>
+                    <td style="border: 1px solid black;">Amount</td>
+                </tr>
+                  <apex:repeat value="{!customWrap.oppLines}" var="opp">
+                   <tr style="border: 1px solid black;">
+                    <td style="border: 1px solid black;border-top:hidden;"><b>{!opp.productDescription}</b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b>{!opp.productHSNCode}</b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b>{!opp.prodctQty}</b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b>{!opp.prdouctRate}</b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b>{!opp.productAmount}</b></td>
+                </tr>
+                 </apex:repeat>
+                 <tr>
+                    <td style="border: 1px solid black;border-top:hidden;"><b>FOB TOTAL</b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b>{!customWrap.totalAmount}</b></td>
+                 </tr>
+                 <tr>
+                    <td style="border: 1px solid black;border-top:hidden;"><b>OCEAN FREIGHT (20 FT FCL)</b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b>{!customWrap.TotalFreightCharges}</b></td>
+                 </tr>
+                 <tr>
+                    <td style="border: 1px solid black;border-top:hidden;"><b>SFDA TESTING CHARGES (USD 200/Product)</b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b> </b></td>
+                 </tr>
+                 <tr>
+                    <td style="border: 1px solid black;border-top:hidden;"><b>COC CHARGES </b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b></b></td>
+                    <td style="border: 1px solid black;border-top:hidden;"><b> </b></td>
+                 </tr>
+            </table>
+            
+        </body>        
+    </html>
+</apex:page>

@@ -1,0 +1,37 @@
+<template>
+    <lightning-card  variant="Narrow"  title="Chat Bot" icon-name="standard:account">
+        <!-- <lightning-modal-header label="My Modal">
+    </lightning-modal-header> -->
+    <lightning-modal-body>
+        <div class="chat-container">
+    <div class="chat-history" id="chat-history">      
+        <template for:each={responseList} for:item="Resp">
+          <div key={Resp.Id} >
+              <div class="slds-box slds-m-around_medium req">
+                  {Resp.Question__c}
+              </div>
+              <div class="slds-box slds-m-around_medium res">  
+                <lightning-formatted-rich-text disable-linkify value={Resp.Answers__c}></lightning-formatted-rich-text>
+              </div>
+          </div>
+        </template>
+        <template if:true={isRecognizedText}>
+      <div class="slds-box slds-m-around_medium req">
+        {recognizedText}
+      </div>
+      </template>
+    </div>
+  </div>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <div class="slds-grid">
+            <div class="slds-col slds-size_10-of-12">
+                <lightning-input class="chat-input" type="text" variant="standard" value={recognizedText} name="name" placeholder="Type here..." onchange={handleChange} ></lightning-input>
+            </div>
+            <div class="slds-col slds-size_2-of-12 slds-m-top_medium">
+                <lightning-button class="chat-button" variant="brand" label="Send" title="Give Input" onclick={handleClick}></lightning-button>
+            </div>
+        </div>
+    </lightning-modal-footer>
+    </lightning-card>
+</template>

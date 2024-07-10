@@ -1,0 +1,112 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+                access="global" controller="ProjectHanlder">
+    
+    <aura:attribute name="ship_addresses" type="List" />
+    <aura:attribute name="bill_addresses" type="List" />
+    
+    <aura:attribute name="selectedBilAddressIndex" type="Integer" />
+    <aura:attribute name="checkedBillAdd" type="Boolean" />
+    <aura:attribute name="selectedAddressIndex" type="Integer" />
+    <aura:attribute name="checkedShipAdd" type="Boolean" />
+    
+    <aura:attribute name="billCity" type="String" />
+    <aura:attribute name="billStreet" type="String" />
+    <aura:attribute name="billState" type="String" />
+    <aura:attribute name="billCountry" type="String" />
+    <aura:attribute name="billPostalCode" type="String" />
+    
+    <aura:attribute name="shipCity" type="String" />
+    <aura:attribute name="shipStreet" type="String" />
+    <aura:attribute name="shipState" type="String" />
+    <aura:attribute name="shipCountry" type="String" />
+    <aura:attribute name="shipPostalCode" type="String" />
+    
+    
+    <!-- Handler Definitions -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+    <!-- Rendering the Shipping Addresses -->
+    <h3>Shipping Address</h3><br/>
+    <div class="slds-scrollable_x">
+        <table class="slds-table slds-table_bordered slds-table_col-bordered">
+            <thead>
+                <tr>
+                    <th>Select</th>
+                    <th>Address Type</th>
+                    <th>Street</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>Country</th>
+                    <th>Pin Code</th>
+                    <th>GST Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                <aura:iteration items="{!v.ship_addresses}" var="address" indexVar="index">
+                    <tr key="{!address.id}">
+                        <!-- <td>
+                            <lightning:input type="checkbox" name="{!index}" value="{!address.id}" checked="{!address.checked}" onchange="{!c.onAddressSelect}" />
+                        </td> -->
+                        <td>
+                            <input type="radio" id="{!address.id}" name="shippingOptions" checked="{!address.checked}" onclick="{!c.onAddressSelect}"  />
+                        </td>
+                        <td>{!address.type}</td>
+                        <td>{!address.street}</td>
+                        <td>{!address.city}</td>
+                        <td>{!address.state}</td>
+                        <td>{!address.country}</td>
+                        <td>{!address.postalCode}</td>
+                        <td>{!address.gstNumber}</td>
+                    </tr>
+                </aura:iteration>
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Rendering the Billing Addresses -->
+    <br/><br/>
+    <h3>Billing Address</h3><br />
+    <div class="slds-scrollable_x">
+        <table class="slds-table slds-table_bordered slds-table_col-bordered">
+            <thead>
+                <tr>
+                    <th>Select</th>
+                    <th>Address Type</th>
+                    <th>Street</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>Country</th>
+                    <th>Pin Code</th>
+                    <th>GST Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                <aura:iteration items="{!v.bill_addresses}" var="address" indexVar="index">
+                    <tr key="{!address.id}">
+                        <!-- <td>
+                            <lightning:input type="checkbox" data-index="{!index}" data-id="{!address.id}" checked="{!address.checked}" onchange="{!c.onBillAddressSelect}" />
+                        </td> -->
+                        <td>
+                            <input type="radio" id="{!address.id}" name="billingOptions" checked="{!address.checked}" onclick="{!c.onBillAddressSelect}"  />
+                        </td>
+                        <td>{!address.type}</td>
+                        <td>{!address.street}</td>
+                        <td>{!address.city}</td>
+                        <td>{!address.state}</td>
+                        <td>{!address.country}</td>
+                        <td>{!address.postalCode}</td>
+                        <td>{!address.gstNumber}</td>
+                    </tr>
+                </aura:iteration>
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Next Button -->
+    <br/>
+    <div class="slds-clearfix">
+        <div class="slds-float_right">
+            <lightning:button variant="brand" label="Next" class="slds-m-left_x-small" onclick="{!c.handleNavigate}" />
+        </div>
+    </div>    
+</aura:component>

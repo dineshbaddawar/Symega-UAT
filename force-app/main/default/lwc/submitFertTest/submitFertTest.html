@@ -1,0 +1,347 @@
+<!--
+  @description       : 
+  @author            : Dhanush Babu
+  @group             : 
+  @last modified on  : 04-29-2024
+  @last modified by  : Dhanush Babu
+-->
+<template>
+    <lightning-quick-action-panel>
+        <template if:true={showSpinner}>
+            <div class="exampleHolder slds-align_absolute-center">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:false={showSpinner}>
+            <template if:true={showAccountPage}>
+                <template if:true={isAccount}>
+                    <lightning-quick-action-panel header="Update Account"> 
+                        <template if:true={accFieldsMissing}>
+                            <lightning-record-edit-form record-id={accId} object-api-name="Account" onsuccess={handleSuccess}>
+                                <div class="slds-grid slds-gutters">
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <template for:each={missingFieldsList} for:item="mfl">
+                                            <lightning-input-field key={mfl} field-name={mfl}>
+                                            </lightning-input-field>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <template if:true={showUserField}>
+                                            <lightning-input type="text" variant="standard" name="UserCode" label="User SAP Code" placeholder="type here..." value={userSapCode} onchange={handleChange}></lightning-input>
+                                        </template>
+                                        <template if:true={showBhField}>
+                                            <lightning-input type="text" variant="standard" name="BHCode" label="BH SAP Code" placeholder="type here..." value={bhSapCode} onchange={handleChange}></lightning-input>
+                                        </template>
+                                    </div>
+                                </div>
+                                <div class="slds-align_absolute-center slds-border_top">
+                                    <lightning-button class="slds-m-top_small" variant="brand" type="submit" name="update" label="Update"></lightning-button>&nbsp;&nbsp;
+                                    <lightning-button  class="slds-m-top_small" variant="neutral" label="Cancel" onclick={closeModal} ></lightning-button>
+                                </div>
+                            </lightning-record-edit-form>
+                        </template>
+
+                        <template if:false={accFieldsMissing}>
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_1-of-2">
+                                    <template if:true={showUserField}>
+                                        <lightning-input type="text" variant="standard" name="UserCode" label="User SAP Code" placeholder="type here..." value={userSapCode} onchange={handleChange}></lightning-input>
+                                    </template>
+                                    <template if:true={showBhField}>
+                                        <lightning-input type="text" variant="standard" name="BHCode" label="BH SAP Code" placeholder="type here..." value={bhSapCode} onchange={handleChange}></lightning-input>
+                                    </template>
+                                </div>
+                            </div>
+                            <div class="slds-align_absolute-center slds-border_top">
+                                <lightning-button class="slds-m-top_small" variant="brand" name="update" label="Update" onclick={handleSuccess}></lightning-button>&nbsp;&nbsp;
+                                <lightning-button  class="slds-m-top_small" variant="neutral" label="Cancel" onclick={closeModal} ></lightning-button>
+                            </div>
+                        </template>                            
+                    </lightning-quick-action-panel>
+
+                </template>
+                <template if:false={isAccount}>
+                    <!-- Customer Address  -->
+                    <lightning-quick-action-panel header="Update Customer Address"> 
+                        <template if:true={custAddFieldsMissing}>
+                            <lightning-record-edit-form record-id={dispId} object-api-name="Dispatch_Address__c" onsuccess={handleSuccess} onerror={handleError}>
+                                <div class="slds-grid slds-gutters">
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <template for:each={missingFieldsList} for:item="mfl">
+                                            <lightning-input-field key={mfl} field-name={mfl}>
+                                            </lightning-input-field>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2">
+                                        <template if:true={showDlvryPlantField}>
+                                            <lightning-combobox name="dlvryPlant" label="Delivery Plant" value={dlvryPlantVal} options={dlvryPlantList} onchange={handleChange} ></lightning-combobox>                           
+                                        </template>
+                                        <template if:true={showCustTypeField}>
+                                            <lightning-combobox name="custType" label="Customer Type" value={custTypeVal} options={custTypeList} onchange={handleChange} ></lightning-combobox>                           
+                                        </template>
+                                        <template if:true={showAccSegField}>
+                                            <lightning-combobox name="accSeg" label="Account Segment" value={accSegVal} options={accSegList} onchange={handleChange} ></lightning-combobox>                           
+                                        </template>
+                                        <template if:true={showUserField}>
+                                            <lightning-input type="text" variant="standard" name="UserCode" label="User SAP Code" placeholder="type here..." value={userSapCode} onchange={handleChange}></lightning-input>
+                                        </template>
+                                        <template if:true={showBhField}>
+                                            <lightning-input type="text" variant="standard" name="BHCode" label="BH SAP Code" placeholder="type here..." value={bhSapCode} onchange={handleChange}></lightning-input>
+                                        </template>
+                                    </div>
+                                </div>
+                                
+                                <div class="slds-align_absolute-center slds-border_top">
+                                    <lightning-button class="slds-m-top_small" variant="brand" type="submit" name="update" label="Update"></lightning-button>&nbsp;&nbsp;
+                                    <lightning-button  class="slds-m-top_small" variant="neutral" label="Cancel" onclick={closeModal} ></lightning-button>
+                                </div>
+                            </lightning-record-edit-form> 
+                        </template>
+                        <template if:false={custAddFieldsMissing}>
+                            <div class="slds-grid slds-gutters">
+                                <div class="slds-col slds-size_1-of-2">
+                                    <template if:true={showDlvryPlantField}>
+                                        <lightning-combobox name="dlvryPlant" label="Delivery Plant" value={dlvryPlantVal} options={dlvryPlantList} onchange={handleChange} ></lightning-combobox>                           
+                                    </template>
+                                    <template if:true={showCustTypeField}>
+                                        <lightning-combobox name="custType" label="Customer Type" value={custTypeVal} options={custTypeList} onchange={handleChange} ></lightning-combobox>                           
+                                    </template>
+                                    <template if:true={showAccSegField}>
+                                        <lightning-combobox name="accSeg" label="Account Segment" value={accSegVal} options={accSegList} onchange={handleChange} ></lightning-combobox>                           
+                                    </template>
+                                    <template if:true={showUserField}>
+                                        <lightning-input type="text" variant="standard" name="UserCode" label="User SAP Code" placeholder="type here..." value={userSapCode} onchange={handleChange}></lightning-input>
+                                    </template>
+                                    <template if:true={showBhField}>
+                                        <lightning-input type="text" variant="standard" name="BHCode" label="BH SAP Code" placeholder="type here..." value={bhSapCode} onchange={handleChange}></lightning-input>
+                                    </template>
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="slds-align_absolute-center slds-border_top">
+                                <lightning-button class="slds-m-top_small" variant="brand" name="update" label="Update" onclick={handleSuccess}></lightning-button>&nbsp;&nbsp;
+                                <lightning-button  class="slds-m-top_small" variant="neutral" label="Cancel" onclick={closeModal} ></lightning-button>
+                            </div>
+                        </template>
+                    </lightning-quick-action-panel>
+                </template>
+            </template>
+
+            <template if:false={showAccountPage}>
+                <lightning-quick-action-panel header="Submit for FERT Code"> 
+                    <lightning-accordion allow-multiple-sections-open class="example-accordion " onsectiontoggle={handleToggleSection} active-section-name={activeSection}>
+                        <lightning-accordion-section name="A" label="Customer Details">
+                                                <label style="font-size:14px;  color:blue"><b>Customer Name</b></label> :<b>{custName} </b><br/>
+                                                <label style="font-size:14px;  color:blue"><b>Customer No</b></label> :<b>{custNo}</b><br/>
+                                                <label style="font-size:14px;  color:blue"><b>Billing Street</b></label> :<b>{billStreet}</b><br/>
+                                                <label style="font-size:14px;  color:blue"><b>Billing City</b></label> :<b>{billCity} </b> <br/>
+                                                <label style="font-size:14px;  color:blue"><b>Billing Country</b></label> :<b>{billCountry}</b> <br/>
+                                                <label style="font-size:14px;  color:blue"><b>Billing State</b></label> :<b>{billState}</b> <br/>
+                                                <label style="font-size:14px;  color:blue"><b>Billing Postal Code</b></label> :<b>{billPostCode}</b>
+                        </lightning-accordion-section>
+                        <lightning-accordion-section name="B" label="Product Details" >
+                            <div class="slds-p-around_x-small slds-scrollable abc  rowcell" >
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered " >
+                                    <thead >
+
+                                        <tr class="">
+                                            <th class="slds-size_3-of-10 headcol"  scope="col">Product Name </th>
+                                            <template for:each={oppProdList} for:item="oppProd">  
+                                            <td class="long "  key={oppProd.Id}>  
+                                                <!-- <lightning-input type="text" value={oppProd.Name}  data-id={oppProd.Id}  data-name="Name" onchange ={changeHandler} disabled ></lightning-input> -->
+                                            <lightning-input type="text" value={oppProd.Product2.Name}  data-id={oppProd.Id}  data-name="Name" onchange ={changeHandler} disabled ></lightning-input>
+                                            </td>
+                                            </template>
+                                        </tr>
+
+                                        <tr class="">
+                                            <th class="slds-size_3-of-10 headcol" scope="col">HALB Code</th>
+                                            <template for:each={oppProdList} for:item="oppProd">
+                                            <td class="" key={oppProd.Id}>  <lightning-input type="text" value={oppProd.ProductCode}  data-id={oppProd.Id}  data-name="ProductCode"  onchange ={changeHandler} disabled></lightning-input></td>
+                                            </template>
+                                        </tr>
+
+                                        <tr class="">
+                                            <th class="slds-size_3-of-10 headcol" scope="col"> Expected Order Quantity </th>
+                                        <template for:each={oppProdList} for:item="oppProd">
+                                            <td class="long" key={oppProd.Id}>  <lightning-input type="text" value={oppProd.Quantity}  data-id={oppProd.Id}  data-name="Quantity" onchange ={changeHandler} disabled></lightning-input></td>
+                                        </template>
+                                        </tr>
+
+                                        <tr class="">
+                                            <th class="slds-size_3-of-10 headcol" scope="col"> Unit of Measure</th>
+                                            <template for:each={oppProdList} for:item="oppProd">
+                                            <!-- <td class="long" key={oppProd.Id}>  <lightning-input type="text" value={oppProd.Quantity_Unit__c} data-id={oppProd.Id}  data-name="Quantity_Unit__c"  onchange ={changeHandler} required></lightning-input></td> -->
+                                            <td class="long" key={oppProd.Id}>   <lightning-combobox name="Tertiary"  data-id={oppProd.Id}  required data-name="Quantity_Unit__c" value={oppProd.Quantity_Unit__c}   options={uomList} onchange={changeHandler} disabled></lightning-combobox></td>
+
+                                            </template>
+                                        </tr>
+                                        
+                                        <tr class="">
+                                            <th class="slds-size_3-of-10 headcol" scope="col">Packing Type</th>
+                                            <template for:each={oppProdList} for:item="oppProd">
+                                            <td class="long" key={oppProd.Id}>   <lightning-combobox name="progress"  data-id={oppProd.Id}   data-name="Packaging_Type__c" value={oppProd.Packaging_Type__c}   options={options2} onchange={changeHandler} ></lightning-combobox></td>
+                                            </template>
+                                        </tr>
+
+                                        <tr class="">
+                                            <th class="slds-size_3-of-10 headcol" scope="col"> Fert Description </th>
+                                            <template for:each={oppProdList} for:item="oppProd">
+                                            <td class="long" key={oppProd.Id}>  <lightning-input type="text" value={oppProd.Fert_Description__c} data-id={oppProd.Id}  data-name="Fert_Description__c"  onchange ={changeHandler}> </lightning-input></td>
+                                            </template>
+                                        </tr>
+                                        
+                                        <tr class="">
+                                            <th class="slds-size_3-of-10 headcol" scope="col"> Sales Unit</th>
+                                            <template for:each={oppProdList} for:item="oppProd">
+                                            <td class="long" key={oppProd.Id}>  <lightning-combobox name="Sales_Unit__c"  data-id={oppProd.Id} data-name="Sales_Unit__c" value={oppProd.Sales_Unit__c} options={salesUnitList} onchange={changeHandler}></lightning-combobox></td>
+
+                                            </template>
+                                        </tr>
+                                            
+                                        <tr class="">
+                                            <th class="slds-size_3-of-10 headcol" scope="col">Base Qty</th> 
+                                            <template for:each={oppProdList} for:item="oppProd">
+                                            <td class="long" key={oppProd.Id}>  <lightning-input type="text" value={oppProd.Packaging_Quantity__c} data-id={oppProd.Id}  data-name="Packaging_Quantity__c"  onchange ={changeHandler}></lightning-input></td>
+                                            </template>
+                                        </tr>
+                                            <tr class="">
+                                            <th class="slds-size_3-of-10 headcol" scope="col">Art Work</th>
+                                            <template for:each={oppProdList} for:item="oppProd">
+                                            <td class="long" key={oppProd.Id}>  <lightning-input type="text" value={oppProd.Art_Work__c} data-id={oppProd.Id}  data-name="Art_Work__c"  onchange ={changeHandler}></lightning-input></td>
+                                            </template>
+                                        </tr>
+                                        <tr class="">
+                                            <th class="slds-size_3-of-10 headcol" scope="col">Shelf Life(Months)</th>   
+                                            <template for:each={oppProdList} for:item="oppProd">
+                                            <td class="long" key={oppProd.Id}>  <lightning-input type="number" value={oppProd.Shelf_Life__c} data-id={oppProd.Id}  data-name="Shelf_Life__c"  onchange ={changeHandler}></lightning-input></td>
+                                        </template>
+                                        </tr>
+                                        <tr class="">
+                                            <th class="slds-size_3-of-10 headcol" scope="col">Allergen Status Required</th> 
+                                            <template for:each={oppProdList} for:item="oppProd">
+                                            <td class="long" key={oppProd.Id}> 
+                                            <br/>
+                                            <lightning-input type="checkbox" checked={oppProd.Allergen_Status_Required__c} value={oppProd.Allergen_Status_Required__c} onchange ={changeHandler} data-id={oppProd.Id}  data-name="Allergen_Status_Required__c" ></lightning-input>
+                                            </td>
+                                            </template>
+                                        </tr>
+                                        <tr class="">
+                                            <th class="slds-size_3-of-10 headcol" scope="col">Veg/ Non- Veg Logo in Label </th>
+                                            <template for:each={oppProdList} for:item="oppProd">
+                                            <td class="long" key={oppProd.Id}>   <lightning-combobox name="progress"  data-id={oppProd.Id}   data-name="Veg_Nonveg_Logo_In_Label__c" value={oppProd.Veg_Nonveg_Logo_In_Label__c}   options={options4} onchange={changeHandler} ></lightning-combobox></td>
+                                            </template>
+                                        </tr>
+                                        <tr class="">
+                                            <th class="slds-size_3-of-10 headcol" scope="col">Customer Customised label</th>
+                                            <template for:each={oppProdList} for:item="oppProd">
+                                            <td class="long" key={oppProd.Id}>  <lightning-input type="text" value={oppProd.Customized_Label__c}  data-id={oppProd.Id}  data-name="Customized_Label__c" onchange ={changeHandler}> </lightning-input></td>
+                                            </template>
+                                        </tr>
+                                        <tr class="">
+                                            <th class="slds-size_3-of-10 headcol" scope="col">Ingredients List declared <br/>with customer</th>
+                                            <template for:each={oppProdList} for:item="oppProd">
+                                            <td class="long" key={oppProd.Id}> 
+                                            <lightning-combobox name="progress"  data-id={oppProd.Id}  data-name="Ingredients_List_Declared_With_Customer__c" value={oppProd.Ingredients_List_Declared_With_Customer__c}   options={options1} onchange={changeHandler} ></lightning-combobox>
+                                            </td>
+                                            </template>
+                                        </tr>
+                                        <tr class="">
+                                            <th class="slds-size_3-of-10 headcol" scope="col">Ingredients List</th>
+                                            <template for:each={oppProdList} for:item="oppProd">
+                                            <td class="long" key={oppProd.Id}>  <lightning-input type="text" value={oppProd.Ingredient_list__c}  data-id={oppProd.Id}  data-name="Ingredient_list__c"  onchange ={changeHandler}></lightning-input></td>
+                                            </template>
+                                        </tr>
+                                        <tr class="">
+                                            <th class="slds-size_3-of-10 headcol" scope="col">Reveal SYMEGA Identity</th>
+                                            <template for:each={oppProdList} for:item="oppProd">
+                                            <td class="long" key={oppProd.Id}>  <lightning-input type="text" value={oppProd.Reveal_Symega_Identity__c}  data-id={oppProd.Id}  data-name="Reveal_Symega_Identity__c"  onchange ={changeHandler}></lightning-input></td>
+                                            </template>
+                                        </tr>
+                                        <tr class="">
+                                            <th class="slds-size_3-of-10 headcol" scope="col">Cusinery identity</th>
+                                            <template for:each={oppProdList} for:item="oppProd">
+                                            <td class="long" key={oppProd.Id}> <lightning-input type="text" value={oppProd.Cusinery_identity__c}  data-id={oppProd.Id}  data-name="Cusinery_identity__c" onchange ={changeHandler}></lightning-input></td>
+                                            </template>
+                                        </tr>
+
+                                        <tr class="">
+                                            <th class="slds-size_3-of-10 headcol" scope="col">Label</th> 
+                                            <template for:each={oppProdList} for:item="oppProd">
+                                            <td class="long" key={oppProd.Id}> <lightning-combobox name="progress"  data-id={oppProd.Id}  data-name="Label__c" value={oppProd.Label__c}  options={options} onchange={changeHandler} ></lightning-combobox>
+                                            </td>
+                                        </template>
+                                        </tr>
+                                        <tr class="">
+                                            <th class="slds-size_3-of-10 headcol" scope="col">Material Sector</th> 
+                                            <template for:each={oppProdList} for:item="oppProd">
+                                          <!--  <td class="long" key={oppProd.Id}>  <lightning-input type="text" value={oppProd.Material_Sector__c}  data-id={oppProd.Id}  data-name="MaterialSector" onchange ={changeHandler}></lightning-input></td>-->
+                                        <td class="long" key={oppProd.Id}> 
+                                            <lightning-combobox name="progress"  data-id={oppProd.Id}  data-name="Material_Sector__c" required value={oppProd.Material_Sector__c} options={options12} onchange={changeHandler} ></lightning-combobox>
+                                            </td>
+                                            </template>
+                                        </tr>
+
+                                        <tr class="">
+                                            <th class="slds-size_3-of-10 headcol" scope="col">Micro Analysis Required</th> 
+                                            <template for:each={oppProdList} for:item="oppProd">
+                                          <!--  <td class="long" key={oppProd.Id}>  <lightning-input type="text" value={oppProd.Micro_Analysis_Required__c}  data-id={oppProd.Id}  data-name="MicroAnalysisRequired" onchange ={changeHandler}></lightning-input></td>-->
+                                        <td class="long" key={oppProd.Id}> 
+                                            <lightning-combobox name="progress"  data-id={oppProd.Id}  data-name="Micro_Analysis_Required__c" value={oppProd.Micro_Analysis_Required__c} options={options1} onchange={changeHandler} ></lightning-combobox>
+                                            </td>
+                                            </template>
+                                        </tr>
+
+
+                                        <tr class="">
+                                            <th class="slds-size_3-of-10 headcol" scope="col">Sales Remarks</th>
+                                            <template for:each={oppProdList} for:item="oppProd">
+                                            <td class="long" key={oppProd.Id}>  <lightning-input type="text" value={oppProd.Sales_Remarks__c}  data-id={oppProd.Id}  data-name="Sales_Remarks__c" onchange ={changeHandler}></lightning-input></td>
+                                            </template>
+                                        </tr>
+                                        <tr class="">
+                                            <th class="slds-size_3-of-10 headcol" scope="col">Plant </th>
+                                            <template for:each={oppProdList} for:item="oppProd">
+                                            <td class="long" key={oppProd.Id}>   <lightning-combobox name="progress"  data-id={oppProd.Id}   data-name="Plant__c" value={oppProd.Plant__c}   options={options3} onchange={changeHandler} ></lightning-combobox></td>
+                                            </template>
+                                        </tr>
+                                        <tr class="">
+                                            <th class="slds-size_3-of-10 headcol" scope="col">Control Code/HSN Code </th>
+                                            <template for:each={oppProdList} for:item="oppProd">
+                                            <td class="long" key={oppProd.Id}>  <lightning-input type="text" value={oppProd.HSN_Code__c} data-id={oppProd.Id}  data-name="HSN_Code__c"  onchange={changeHandler}></lightning-input></td>
+                                        </template>  
+                                        </tr>
+                                        <tr class="">
+                                            <th class="slds-size_3-of-10 headcol" scope="col">Primary </th>
+                                            <template for:each={oppProdList} for:item="oppProd">
+                                            <td class="long" key={oppProd.Id}>   <lightning-combobox name="Primary"  data-id={oppProd.Id}   data-name="Primary__c" value={oppProd.Primary__c}   options={primList} onchange={changeHandler} ></lightning-combobox></td>
+                                        </template>
+                                        </tr>
+                                        <tr class="">
+                                            <th class="slds-size_3-of-10 headcol" scope="col">Secondary </th>
+                                            <template for:each={oppProdList} for:item="oppProd">
+                                            <td class="long" key={oppProd.Id}>   <lightning-combobox name="Secondary"  data-id={oppProd.Id}   data-name="Secondary__c" value={oppProd.Secondary__c}   options={secondList} onchange={changeHandler} ></lightning-combobox></td>
+                                            </template>
+                                        </tr>
+                                        <tr class="">                    
+                                            <th class="slds-size_3-of-10 headcol slds-m-top_x-small" scope="col">Teritary </th>
+                                            <template for:each={oppProdList} for:item="oppProd">
+                                            <td class="long" key={oppProd.Id}>   <lightning-combobox name="Tertiary"  data-id={oppProd.Id}   data-name="Tertiary__c" value={oppProd.Tertiary__c}   options={tertList} onchange={changeHandler} ></lightning-combobox></td>
+                                            </template>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </lightning-accordion-section>
+                    </lightning-accordion>
+                </lightning-quick-action-panel>
+                
+                <div class="slds-align_absolute-center slds-border_top">
+                    <lightning-button  variant="neutral" label="Cancel" onclick={closeModal} class="slds-m-top_small"></lightning-button>&nbsp;&nbsp;
+                    <lightning-button  variant="brand" label="Send Notification"  onclick = {handleSave} class="slds-m-top_small" ></lightning-button>
+                </div>
+            </template>
+        </template>
+    </lightning-quick-action-panel>
+</template>

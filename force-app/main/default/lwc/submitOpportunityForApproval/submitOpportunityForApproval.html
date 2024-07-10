@@ -1,0 +1,13 @@
+<template>
+    <lightning-quick-action-panel header="Submit For Approval">
+            <div class="slds-col slds-size_1-of-2" style="color:red; font-size:16px;">
+                       Have you added all the products. If Yes, Proceed ?
+                    </div>
+    </lightning-quick-action-panel>
+               
+               <div class="slds-align_absolute-center slds-border_top">
+                    <lightning-button class="slds-m-top_small" variant="brand" label="Yes"   onclick={handleSearch}></lightning-button>&nbsp;&nbsp;
+                    <lightning-button  class="slds-m-top_small" variant="neutral" label="No" onclick={closeModal} ></lightning-button>
+                </div>
+                  <br/>
+</template>

@@ -1,0 +1,32 @@
+<aura:component controller ="OperationsPortalController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader" access="global" >
+    
+    <!-- <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>   -->
+    <aura:attribute name="uploadCSVFileFormat" type="Upload_Sample_LineItems__mdt"/>
+    <aura:attribute name="pApplist" type="Sample_Line_Item__c[]"/>
+    
+    <div class="slds-border_bottom" style="text-align:center; font-size:20px;">Download Template</div>
+    <div class="slds-grid slds-gutters">
+        
+        <div class="slds-col"><br/><br/>
+            <span>
+                <div class="slds-text-body_small slds-text-color_error" style="font-size:18px;">- Sample Invoice Date Format should be yyyy-mm-dd.</div>
+                <div class="slds-text-body_small slds-text-color_error" style="font-size:18px;">- Actual Date Of Dispatch Format should be yyyy-mm-dd.</div>
+                <div class="slds-text-body_small slds-text-color_error" style="font-size:18px;">- Released Status Value should be : Released | Hold | Cancelled.</div>
+                <!-- <div class="slds-text-body_small slds-text-color_error">- GD Result will accpet Pass, Fail (Picklist) value.</div>
+                <div class="slds-text-body_small slds-text-color_error">- PI Result will accpet Pass, Fail (Picklist) value.</div> -->
+            </span>
+        </div>
+        <div class="slds-col slds-size_2of-2"><br/>
+            <div style="width:100%;padding: 25px">
+                <div style="float:right">
+                    <lightning:button iconName="utility:download" 
+                                      iconPosition="left" 
+                                      label="Download Format" 
+                                      onclick="{!c.downloadFormat}" 
+                                      class="slds-button slds-button_brand"/>        
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</aura:component>

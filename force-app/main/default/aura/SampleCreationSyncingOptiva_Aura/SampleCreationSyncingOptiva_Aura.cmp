@@ -1,0 +1,5 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader" access="global" >
+
+<aura:attribute name="recordId" type="Id" />
+<c:sampleCreationSyncingOptiva recordId ="{!v.recordId}"/>	
+</aura:component>

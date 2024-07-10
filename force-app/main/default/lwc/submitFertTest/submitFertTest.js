@@ -1,0 +1,532 @@
+import { LightningElement,api,wire,track } from 'lwc';
+import getOpportunityprods from '@salesforce/apex/SubmitForFertCodeController.getOpportunityprods'; 
+import GetPicklistValues_Object from '@salesforce/apex/SubmitForFertCodeController.GetPicklistValues_Object';  
+import updateOppProdList from '@salesforce/apex/SubmitForFertCodeController.updateOppProdList'; 
+import updateUserRecord from '@salesforce/apex/SubmitForFertCodeController.updateUser';
+import updateAccRecord from '@salesforce/apex/SubmitForFertCodeController.updateAccount';
+import { CloseActionScreenEvent } from 'lightning/actions';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+export default class SubmitFertTest extends LightningElement {
+ @api recordId;
+ @track oppProdList = [];
+ @track accordionList =[];
+
+ @track prod2List = [];
+
+     custName ;
+     custNo;
+     custAddress;
+     billStreet ;
+     billCity   ;
+     billCountry  ;
+     billState  ;
+     billPostCode ;
+
+ @track options =[];
+ @track options1 =[];
+ @track options2 =[];
+ @track options3 = [];
+ @track options4 = [];
+ @track options12 = [];
+ @track options13 = [];
+ @track dlvryPlantList = [];
+ @track custTypeList = [];
+ @track accSegList = [];
+
+ @track primList = [];
+ @track secondList = [];
+ @track tertList = [];
+ @track uomList =[];
+ @track salesUnitList =[];
+
+  idValueMap = new Map();
+  @track prodList =[];
+  @track jsonVar =[];
+  userSapCode;
+  bhSapCode;
+  userId;
+  bhId;
+  accId;
+  dispId;
+  showAccountPage = false;
+  showSpinner = true;
+  isAccount = false;
+  showUserField = false;
+  showBhField = false;
+  showDlvryPlantField = false;
+  showCustTypeField = false;
+  showAccSegField = false;
+  custAddFieldsMissing = false;
+  accFieldsMissing = false;
+
+   wrapperObject = {
+     prodId: '',
+     bool: false 
+   }
+  wrapperArray = [];
+  missingFieldsList;
+  missingFieldsListForUser;
+  missingFieldsListForBH;
+  dlvryPlantVal;
+  accSegVal;
+  custTypeVal;
+
+     connectedCallback(){
+          debugger;
+          console.log('recordId ===> '+this.recordId);
+          setTimeout(() => {
+               this.getRecordDetails();
+               this.GetPicklistValues_Object();
+          }, 300);
+     }
+
+      activeSectionMessage = '';
+  @track  activeSection = 'B';
+
+    handleToggleSection(event) {
+         debugger;
+        this.activeSectionMessage =
+            'Open section name:  ' + event.detail.openSections;
+    }
+
+//     handleSetActiveSectionC() {
+//          debugger;
+//         const accordion = this.template.querySelector('.example-accordion');
+
+//         accordion.activeSectionName = 'A';
+//     }
+
+     handleChange(event){
+          debugger;
+          let name = event.target.name;
+          if(name == 'UserCode'){
+               this.userSapCode = event.target.value
+          }
+          else if(name == 'BHCode'){
+               this.bhSapCode = event.target.value
+          }
+          else if(name == 'dlvryPlant'){
+               this.dlvryPlantVal = event.target.value
+          }
+          else if(name == 'custType'){
+               this.custTypeVal = event.target.value
+          }
+          else if(name == 'accSeg'){
+               this.accSegVal = event.target.value
+          }
+     }
+
+     getRecordDetails(){
+          debugger;
+          getOpportunityprods({OppId:this.recordId}).then(data=>{
+               if(data){
+                    console.log('Data',data);
+                    this.oppProdList = data.oliList;
+                    this.accordionList = data.oliList[0];
+
+                    if(!data.oliList[0].Opportunity.Account_Billing_Address__c && (data.oliList[0].Opportunity.Customer_Billing_Address__c == null || data.oliList[0].Opportunity.Customer_Billing_Address__c == undefined)){
+                         this.showToast('Error', 'Address is missing', 'error');
+                         this.closeModal();
+                    }
+                    else{
+                         if( data.oliList[0].Opportunity.Account_Billing_Address__c){
+                              this.custNo = data.oliList[0].Opportunity.Account.Customer_Code_SAP__c ;
+                         }
+                         else{
+                              this.custNo =  data.oliList[0].Opportunity.Customer_Billing_Address__r.Customer_Code_SAP__c;
+                         }
+                         
+                         this.billStreet    =  data.oliList[0].Opportunity.Billing_Street__c;
+                         this.billCity      =  data.oliList[0].Opportunity.Billing_City__c;
+                         this.billCountry   =  data.oliList[0].Opportunity.Billing_Country__c;
+                         this.billState     =  data.oliList[0].Opportunity.Billing_State__c;
+                         this.billPostCode  =  data.oliList[0].Opportunity.Billing_Postal_Code__c;
+
+                         this.custName = data.oliList[0].Opportunity.Account.Name ;
+                         console.log('  this.custName ---->',  this.custName );
+
+                         console.log('recordId ===> '+this.recordId);
+                         if(this.oppProdList.length!=0){
+                         
+                              for(let i=0;i<this.oppProdList.length;i++){
+                                   let ProdRecord=  {Id:null, HSN_Code__c:null /*Plant__c:null,Shelf_Life__c:null,Allergen_Status_Required__c:null,Veg_Nonveg_Logo_In_Label__c:null */}
+                                   if(this.oppProdList[i].Product2Id){
+
+                                        ProdRecord.Id=this.oppProdList[i].Product2Id;
+                                        ProdRecord.HSN_Code__c = this.oppProdList[i].Product2.HSN_Code__c;
+                                        //ProdRecord.Plant__c = this.oppProdList[i].Product2.Plant__c;
+                                        //ProdRecord.Shelf_Life__c = this.oppProdList[i].Product2.Shelf_Life__c;
+                                        //ProdRecord.Allergen_Status_Required__c =  this.oppProdList[i].Product2.Allergen_Status_Required__c;
+                                        //ProdRecord.Veg_Nonveg_Logo_In_Label__c = this.oppProdList[i].Product2.Veg_Nonveg_Logo_In_Label__c;
+                                   }
+                                   this.prod2List.push(ProdRecord);
+
+                                   if(this.oppProdList[i].Fert_Description__c == null || this.oppProdList[i].Fert_Description__c == undefined || this.oppProdList[i].Fert_Description__c == ''){
+                                        this.oppProdList[i].Fert_Description__c = this.oppProdList[i].Product2.Description;
+                                   }
+
+                                   if(this.oppProdList[i].HSN_Code__c == null || this.oppProdList[i].HSN_Code__c == undefined || this.oppProdList[i].HSN_Code__c == ''){
+                                        this.oppProdList[i].HSN_Code__c = this.oppProdList[i].Product2.HSN_Code__c;
+                                   }
+
+                                   /*if(this.oppProdList[i].Shelf_Life__c == null || this.oppProdList[i].Shelf_Life__c == undefined || this.oppProdList[i].Shelf_Life__c == 0){
+                                        this.oppProdList[i].Shelf_Life__c = this.oppProdList[i].Product2.Shelf_Life__c;
+                                   }
+
+                                   if(!this.oppProdList[i].Allergen_Status_Required__c && this.oppProdList[i].Product2.Allergen_Status_Required__c){
+                                        this.oppProdList[i].Allergen_Status_Required__c = this.oppProdList[i].Product2.Allergen_Status_Required__c;
+                                   }
+
+                                   if(this.oppProdList[i].Veg_Nonveg_Logo_In_Label__c == null || this.oppProdList[i].Veg_Nonveg_Logo_In_Label__c == undefined || this.oppProdList[i].Veg_Nonveg_Logo_In_Label__c == ''){
+                                        this.oppProdList[i].Veg_Nonveg_Logo_In_Label__c = this.oppProdList[i].Product2.Veg_Nonveg_Logo_In_Label__c;
+                                   }*/
+                              }
+                              console.log('  this.prod2List---->',  JSON.stringify(this.prod2List));
+                         }
+
+
+                         if(data.missingFieldsList.length > 0) {
+                              if(this.showAccountPage != true){
+                              this.showAccountPage = true;
+                              }
+                              this.accId = data.accId;
+                              this.dispId = data.dispId;
+                              this.missingFieldsList = data.missingFieldsList;
+                              this.isAccount = data.isAccount;
+                              if(this.isAccount != true){
+                                   this.custAddFieldsMissing = true;
+                              }
+                              else{
+                                   this.accFieldsMissing = true;
+                              }
+                         }
+                         if(data.missingFieldsListForUser.length > 0) {
+                              if(this.showAccountPage != true){
+                              this.showAccountPage = true;
+                              }
+                              this.missingFieldsListForUser = data.missingFieldsListForUser;
+                              this.userId = data.userIdList[0];
+                              this.showUserField = true;
+                         }
+                         if(data.missingFieldsListForBH.length > 0) {
+                              if(this.showAccountPage != true){
+                              this.showAccountPage = true;
+                              }
+                              this.missingFieldsListForBH = data.missingFieldsListForBH;
+                              this.bhId = data.bhIdList[0];
+                              this.showBhField = true;
+                         }
+                         if(data.onlyAccMissingFieldList.length>0){
+                              if(this.showAccountPage != true){
+                              this.showAccountPage = true;
+                              }
+                              if(data.onlyAccMissingFieldList.includes('Delivery_Plant__c')){
+                                   this.showDlvryPlantField = true;
+                              }
+                              if(data.onlyAccMissingFieldList.includes('Customer_Type__c')){
+                                   this.showCustTypeField = true;
+                              }
+                              if(data.onlyAccMissingFieldList.includes('Account_Segment__c')){
+                                   this.showAccSegField = true;
+                              }
+                         }
+
+                         this.showSpinner = false;
+                         console.log('  this.oppProdList---->',  this.oppProdList);
+                         console.log('  this.missingFieldsList --->',  this.missingFieldsList);
+                    }
+
+               }
+          })
+     }
+
+     GetPicklistValues_Object(){
+        debugger;
+        GetPicklistValues_Object().then(data=>{
+             debugger;
+            if(data){
+                console.log('Data',data);
+                let Arr=data.Label.Label__c;
+                let Arr1 = data.Ingredients_List_Declared_With_Customer.Ingredients_List_Declared_With_Customer__c;
+                let Arr2 = data.Packaging_Type.Packaging_Type__c;
+                let Arr3 = data.Plant.Plant__c;
+                let Arr4 = data.veglogo.Veg_Nonveg_Logo_In_Label__c;
+
+               let Arr5 = data.Delivery_Plant__c.Delivery_Plant__c;
+               let Arr6 = data.Customer_Type__c.Customer_Type__c;
+               let Arr7 = data.Account_Segment__c.Account_Segment__c;
+
+               let Arr8 = data.Primary__c.Primary__c;
+               let Arr9 = data.Secondary__c.Secondary__c;
+               let Arr10 = data.Tertiary__c.Tertiary__c;
+               let Arr11 = data.Quantity_Unit__c.Quantity_Unit__c;
+               let Arr12 = data.Material_Sector__c.Material_Sector__c;
+               let Arr13 = data.Sales_Unit__c.Sales_Unit__c;
+
+                let option=[]
+                for(var i=0; i < Arr.length; i++){
+                  option.push({label:Arr[i],value:Arr[i]});
+                }
+                this.options=option;
+
+                 let option1=[]
+                for(var i=0; i < Arr1.length; i++){
+                  option1.push({label:Arr1[i],value:Arr1[i]});
+                }
+                 this.options1=option1;
+
+                  let option2=[]
+                for(var i=0; i < Arr2.length; i++){
+                  option2.push({label:Arr2[i],value:Arr2[i]});
+                }
+                 this.options2=option2;
+
+                  let option3=[]
+                for(var i=0; i < Arr3.length; i++){
+                  option3.push({label:Arr3[i],value:Arr3[i]});
+                }
+                 this.options3=option3;
+
+               let option4=[]
+               for(var i=0; i < Arr4.length; i++){
+                    option4.push({label:Arr4[i],value:Arr4[i]});
+               }
+               this.options4=option4;
+
+               let option5=[]
+               for(var i=0; i < Arr5.length; i++){
+                    option5.push({label:Arr5[i],value:Arr5[i]});
+               }
+               this.dlvryPlantList=option5;
+
+               let option6=[]
+               for(var i=0; i < Arr6.length; i++){
+                    option6.push({label:Arr6[i],value:Arr6[i]});
+               }
+               this.custTypeList=option6;
+
+               let option7=[]
+               for(var i=0; i < Arr7.length; i++){
+                    option7.push({label:Arr7[i],value:Arr7[i]});
+               }
+               this.accSegList=option7;
+
+               let option8=[]
+               for(var i=0; i < Arr8.length; i++){
+                    option8.push({label:Arr8[i],value:Arr8[i]});
+               }
+               this.primList =  option8;
+                
+                let option9=[]
+               for(var i=0; i < Arr9.length; i++){
+                    option9.push({label:Arr9[i],value:Arr9[i]});
+               }
+               this.secondList =  option9;
+                
+                let option10=[]
+               for(var i=0; i < Arr10.length; i++){
+                    option10.push({label:Arr10[i],value:Arr10[i]});
+               }
+               this.tertList =  option10;
+
+                let option11=[]
+               for(var i=0; i < Arr11.length; i++){
+                    option11.push({label:Arr11[i],value:Arr11[i]});
+               }
+               this.uomList =  option11;
+
+               let option12=[]
+               for(var i=0; i < Arr12.length; i++){
+                    option12.push({label:Arr12[i],value:Arr12[i]});
+               }
+               this.options12=option12;
+
+               let option13=[]
+               for(var i=0; i < Arr13.length; i++){
+                    option13.push({label:Arr13[i],value:Arr13[i]});
+               }
+               this.salesUnitList=option13;
+
+                console.log('  this.options---->',JSON.stringify(this.options));
+                console.log('  this.options1---->',JSON.stringify(this.options1));
+                console.log('  this.options12---->',JSON.stringify(this.options12));
+
+
+
+            }
+        })
+     }
+
+    changeHandler(event){
+        debugger;
+         let sectionName=event.currentTarget.dataset.name; // ApiName
+         let id=event.currentTarget.dataset.id;  // RecordId
+ 
+         if(sectionName=='Address'){
+              if(event.target.city){
+                    this.oppProdList.forEach((element) => {
+                         if(element.Id==id){
+                             element.Opportunity.Billing_City__c=event.target.city;
+                         }
+                    })
+              } 
+
+              if(event.target.street){
+                    this.oppProdList.forEach((element) => {
+                         if(element.Id==id){
+                             element.Opportunity.Billing_Street__c=event.target.street;
+                         }
+                    })
+              } 
+
+              if(event.target.country){
+                    this.oppProdList.forEach((element) => {
+                         if(element.Id==id){
+                             element.Opportunity.Billing_Country__c=event.target.country;
+                         }
+                    })
+              } 
+
+              if(event.target.province){
+                    this.oppProdList.forEach((element) => {
+                         if(element.Id==id){
+                             element.Opportunity.Billing_State__c=event.target.province;
+                         }
+                    })
+              } 
+
+              if(event.target.postalCode){
+                    this.oppProdList.forEach((element) => {
+                         if(element.Id==id){
+                             element.Opportunity.Billing_Postal_Code__c=event.target.postalCode;
+                         }
+                    })
+              } 
+
+         }
+         else{
+              this.oppProdList.forEach((element) => {
+                    if(element.Id==id){
+                         if(sectionName == 'Allergen_Status_Required__c'){
+                              element[sectionName]=event.target.checked;
+                         }
+                         else{
+                              element[sectionName] = event.target.value;
+                         }
+                    }
+                    /*else{
+                         this.prod2List.forEach((item)=>{
+
+                              if(item.Id == id){
+                                   if(sectionName == 'Allergen_Status_Required__c'){
+                                         item[sectionName]=event.target.checked;
+
+                                   }else{
+                                        item[sectionName]=event.target.value;
+                                   }
+                                  
+                              }
+
+                         })
+
+                    }*/
+                    console.log('prod2List---->',this.prod2List);
+                    console.log('prod2List--->',JSON.stringify(this.prod2List));
+               })
+
+          } 
+       console.log('this.oppProdList--'+JSON.stringify(this.oppProdList));
+       
+    }
+    
+    updateOppProdList(){
+          debugger;
+
+          var errorOccured = false;
+          for (let i = 0; i < this.oppProdList.length; i++) {
+               if (this.oppProdList[i].Material_Sector__c == null || this.oppProdList[i].Material_Sector__c == undefined || this.oppProdList[i].Material_Sector__c == '') {
+                    errorOccured = true;
+                    alert('Material Sector is missing in one or more records.');
+                    return;
+               }
+               if (this.oppProdList[i].Quantity_Unit__c == null || this.oppProdList[i].Quantity_Unit__c == undefined || this.oppProdList[i].Quantity_Unit__c == '') {
+                    errorOccured = true;
+                    alert('UOM is missing in one or more records.');
+                    return;
+               }
+          }
+          
+          if(!errorOccured){
+               updateOppProdList({oppLineList:this.oppProdList,prod2List:this.prod2List}).then(data=>{
+                    if(data == 'Success'){
+                         console.log('Data',data);
+                         this.showToast('Success', 'Notification to Sales Ops sent successfully!', 'success');
+                         this.closeModal();
+                    }
+                    else if(data == 'create'){
+                         console.log('Data',data);
+                         this.showToast('Success', 'Customer Creation Initiated!', 'success');
+                         this.closeModal();
+                    }
+                    else if(data == 'progress'){
+                         this.showToast('Success', 'Customer Creation already in Progress!', 'success');
+                         this.closeModal();
+                    }
+                    else{
+                         this.showToast('Error', data, 'error');
+                    }
+               })
+          }
+    }
+
+     showToast(title, message, variant) {
+        const event = new ShowToastEvent({
+            title: title,
+            message: message,
+            variant: variant,
+            mode: 'dismissable'
+        });
+        this.dispatchEvent(event);
+     }
+
+     closeModal() {
+          debugger;
+        this.dispatchEvent(new CloseActionScreenEvent());
+        this.handleButtonClick();
+     }
+
+     handleButtonClick() {
+        const customEvent = new CustomEvent('closeaura');
+        this.dispatchEvent(customEvent);
+    }
+
+    
+     handleSave(){
+         debugger;
+         this.updateOppProdList();
+     }
+
+     handleError(){
+          debugger;
+     }
+
+     handleSuccess(){
+          debugger;
+          this.showToast('Success', 'Account updated successfully', 'success');
+          this.showAccountPage = false;
+          if(this.showUserField){
+               console.log('this.userpsap s ', this.userSapCode);
+               updateUserRecord({userSAPcode:this.userSapCode, userId:this.userId, accRec : this.accRec})
+          }
+          if(this.showBhField){
+               console.log('this.bhSapCode ', this.bhSapCode);
+               updateUserRecord({userSAPcode:this.bhSapCode, userId:this.bhId, accRec : this.accRec})
+          }
+
+          if((this.dlvryPlantVal != undefined && this.dlvryPlantVal != '') || (this.custTypeVal != undefined && this.custTypeVal != '') || (this.accSegVal != undefined && this.accSegVal != '')){
+               updateAccRecord({accId:this.accId, dlvryPlant:this.dlvryPlantVal, custType : this.custTypeVal, accSeg : this.accSegVal})
+          }
+          
+     }
+
+}

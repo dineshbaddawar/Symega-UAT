@@ -1,0 +1,21 @@
+.progress-indicator {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+ 
+.step {
+  width: 100px;
+  height: 20px;
+  background-color: lightgray;
+  border-radius: 10px;
+}
+ 
+.active {
+  background-color: blue;
+}
+ 
+.step-label {
+  color: white;
+  text-align: center;
+}

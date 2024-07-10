@@ -1,0 +1,1596 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" controller="OperationsPortalController">
+<html>
+    <head>
+        <c:Libraries ></c:Libraries>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js">
+        </script>
+        <link href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" rel="stylesheet"/>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" rel="stylesheet" crossorigin="anonymous"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <apex:stylesheet value="{!$Resource.OperationsPortalCSS}" />
+
+        <style>
+            .loadingBackground {
+                position: fixed;
+                height: 100%;
+                width: 100%;
+                background: #F6F6F6;
+                z-index: 11111;
+                opacity: 0.7;
+                top: 0px;
+                left: 0;
+                bottom: 0;
+                right: 0;
+            }
+                .loading {
+                top: 50%;
+                left: 50%;
+                margin: -50px 0px 0px -50px;
+                z-index: 111111;
+                position: fixed;
+            }
+
+            .tab {
+overflow: hidden;
+border: 1px solid #ccc;
+background-color: mintcream;
+border-radius: 11px;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+background-color: inherit;
+float: left;
+border: none;
+outline: none;
+cursor: pointer;
+padding: 14px 16px;
+transition: 0.3s;
+font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+display: none;
+padding: 6px 12px;
+border: 1px solid #ccc;
+border-top: none;
+}
+        </style>
+        </head>
+
+        <body ng-app="customerDet_App" ng-controller="customerDet_ctrl" style="background-color: white; !important;">
+            
+            <div class="modal" id="filePreview">
+                <div class="modal-dialog" style="min-width:120rem">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">
+                                <div class="d-flex" style="background:unset;">
+                                    <h3 style="text-align: center"><b>{{selectedFile.userDocument.Name}}</b></h3>
+                                </div>
+                            </h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <iframe style="width:100%;height:75vh;border: 0px;border-radius: 10px;" id="file_frame" title="File"></iframe>
+                        </div>
+                        <div class="col-md-4 cancelSaveBtnDiv">
+                            <button class="blue-btn me-2 mb-5" ng-click="saveInvoiceUnderAccount()" type="button">Save</button>
+                            <button class="blue-btn me-2 mb-5" data-bs-dismiss="modal" type="button">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="loadingSection" ng-if="showSpinner">
+                <div class="loadingBackground"></div>
+                <div>
+                    <apex:image url="{!$Resource.Loading}" styleClass="loading" />
+                </div>
+            </div>
+
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <div class="wrapper px-5">
+                    <div>
+                        <apex:image url="{!$Resource.logo}" alt="SYMEGA" styleClass="brand-logo"/>
+                    </div>
+                    <a class="nav-link" ng-click="showCustomerssPage()" style="color:white;cursor:pointer;margin-left: -1%;" id="customerTab">
+                        <b style="font-size:large;">Home</b>
+                    </a>
+                    <a class="nav-link selectedTabOnSLIDetailPage" style="color:white;cursor:pointer;margin-left: -1%;" id="sampleTab">
+                        <b style="font-size:large;">Customers</b>
+                    </a>
+                    <a class="nav-link" id="sampleProdTab">
+                    </a>
+                <div style="width: 50%;">
+                    <!-- <marquee>
+<h2 class="nav-link" style="color:white;"><b>Hello We partner with our customers across a project’s lifespan – from inception, through product commercialisation, sharing our experience and expertise. With our informed, committed, and passionate team of professionals, we strive to provide you with solutions that bring your culinary ideas to life, faster and better.</b></h2>
+</marquee> -->
+                </div>
+                    
+                        <div class="d-flex text-align-center">
+                            <div class="dropdown">
+                                <i class="far fa-user fa-2x" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" style="color:white;">
+                                </i>
+                                <ul class="dropdown-menu" style="width: 300px" aria-labelledby="dropdownMenuButton1">                                                            
+                                    <li><a class="dropdown-item pe-5"><i class="fa-solid fa-user me-3"></i>{{contactName}} - {{teamType}}</a></li>
+                                    <li>
+                                    <hr class="dropdown-divider" />
+                                </li>
+                                <li><a class="dropdown-item pe-5" ng-click="showProfileDiv()"><i class="fa-solid fa-edit me-3"></i>Edit Profile</a></li>
+                                    <li>
+                                    <hr class="dropdown-divider" />
+                                </li>
+                                <li>
+                                    <a class="dropdown-item pe-5" ng-click="LogoutApplicant()"><i class="fa-solid fa-right-from-bracket me-3"></i>Logout</a>
+                                </li>
+                                </ul>
+                                </div>
+                            </div>
+                </div>
+            </nav>
+
+            <div class="container-fluid px-5">
+                
+                <div class="row mb-5">
+                    <div class="col-md-12" ng-show="showTabBar">
+                        <div class="tab">
+                            <button class="tablinks selectedTab" ng-click="onClickOfDetailPage()" id="DetailTab">Details</button>
+                            <button ng-if="conRec.Role__c != 'Operation Team'" class="tablinks" ng-click="onClickOfSamplePage()" id="SampleTab">Samples</button>
+                            <!-- <button class="tablinks" ng-click="onClickOfFilesPage()" id="FilesTab">Files</button> -->
+                            <button ng-if="conRec.Role__c == 'Operation Team'" class="tablinks" ng-click="onClickOfComments()" id="CommentsTab">Comments</button>
+                        </div>    
+                    </div> </div>                       
+                    <div ng-show="showDetailPage" class="tabContent">
+                    
+                        <div class="row mt-5">
+                            <div class="col-md-8">
+                                <h3 class="pb-3 color-theme"><b>BASIC DETAILS</b></h3>
+                            </div>
+                            <div class="col-md-4">
+                                <button ng-if="conRec.Role__c != 'Operation Team'" class="blue-btn float-end me-2 mb-5" ng-click="editCustomerRec()" type="button">Edit</button>
+                    </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                                <label class="font-if">Account Name</label>                                
+                                <input class="form-control" type="text" ng-model="accDetails.Name" ng-disabled="true"/>
+                            </div>
+                            <div class="col-md-6 mt-3">
+                                <label class="font-if">Account Record Type</label>                                
+                                <input class="form-control" type="text" ng-model="accDetails.Record_Type_Name__c" ng-disabled="disbledFields"/>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Email</label>
+                            <input class="form-control" type="text" ng-model="accDetails.Email__c" ng-disabled="true"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Lead Generated By</label>
+                            <input class="form-control" type="text" ng-model="accDetails.Lead_generated_by__r.Name" ng-disabled="disbledFields"/>
+                        </div>
+                    </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Customer Contact
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Customer_Contact__r.Name" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Account Segment
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Account_Segment__c" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Visible Potential
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Visible_Potential__c" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Billing Block
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Billing_Block__c" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Delivery Plant
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Delivery_Plant__c" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Account Currency
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.CurrencyIsoCode" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Single/Multiple
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Single_Multiple__c" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Credit Limit(Finance)
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Credit_Limit__c" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Customer Discount
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Customer_Discount__c" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Credit Period(Finance)
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Credit_Period_Finance__c" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Language
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Language__c" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Outstanding Balance
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Outstanding_Balance__c" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Transportation Terms
+                            </label>
+                            <select class="form-control" ng-model="accDetails.Transportation_Terms__c" ng-disabled="true">
+                                                    <option ng-repeat="item in transportationTerms" value="{{item}}">{{item}}</option>
+                                                </select>
+                            <!--input class="form-control" type="text" ng-model="accDetails.Transportation_Terms__c" ng-disabled="disbledFields"/-->
+                        </div>
+                            
+                        
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-3 mt-3">
+                            <label class="font-if">InitiatedCustomerCreation
+                            </label>
+                            
+                            <input class="form-check-input" type="checkbox" ng-model="accDetails.InitiatedCustomerCreation__c" ng-disabled="disbledFields"/>
+                        </div>
+                            <div class="col-md-3 mt-3">
+                            <label class="font-if">Billing To Shipping
+                            </label>
+                            
+                            <input class="form-check-input" type="checkbox" ng-model="accDetails.Billing_To_Shipping__c" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-3 mt-3">
+                            <label class="font-if">Submitted To Optiva
+                            </label>
+                            
+                            <input class="form-check-input" type="checkbox" ng-model="accDetails.Submitted_to_Optiva__c" ng-disabled="disbledFields"/>
+                        </div>
+                            <div class="col-md-3 mt-3">
+                            <label class="font-if">Submitted To SAP
+                            </label>
+                            
+                            <input class="form-check-input" type="checkbox" ng-model="accDetails.Submitted_to_SAP__c" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            
+
+                        <div class="row mt-5 mx-1">
+                            <div class="col-md-12">
+                                <h3 class="pb-3 color-theme"><b>ACCOUNT INFORMATION</b></h3>
+                            </div>
+                        </div>
+                        </div>
+                        
+
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Customer Code SAP
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Customer_Code_SAP__c" ng-disabled="disbledFields"/>
+                        </div>
+
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Customer Code OPTIVA
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Customer_Code_OPTIVA__c" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Website
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Website" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Description
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Description" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Industry
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Industry" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">GST Number
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.GST_number__c" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Employees
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.NumberOfEmployees" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Next Follow up Date
+                            </label>
+                            
+                            <input class="form-control" type="date" ng-model="accDetails.Next_Follow_up_Date__c" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Customer Type
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Customer_Type__c" ng-disabled="disbledFields"/>
+                        </div>
+
+                        <div class="row mt-5 mx-1">
+                            <div class="col-md-12">
+                                <h3 class="pb-3 color-theme"><b>ADDRESS DETAILS</b></h3>
+                            </div>
+                        </div>
+                        </div>
+                        
+
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <h4><b>Billing Address</b></h4>
+                            <label class="font-if">Billing Country
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.BillingCountry" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <h4><b>Shipping Address</b></h4>
+                            <label class="font-if">Shipping Country
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.ShippingCountry" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Billing Street
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.BillingStreet" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Shipping Street
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.ShippingStreet" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Billing City
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.BillingCity" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Shipping City
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.ShippingCity" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Billing State
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.BillingState" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Shipping State
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.ShippingState" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Billing PostalCode
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.BillingPostalCode" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Shipping PostalCode
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.ShippingPostalCode" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+
+                        <div class="row mt-5">
+                            <div class="col-md-12">
+                                <h3 class="pb-3 color-theme"><b>BILLING DETAILS</b></h3>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Payment Terms
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Payment_terms__c" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">NDA Required
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.NDA_required__c" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">PAN Number
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.PAN_Number__c" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Credit Period
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Credit_Period__c" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Contract Period (In Months)
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Contract_period__c" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Credit Limit
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Credit_Limit__c" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+
+                        <div class="row">
+                            <div class="row mt-5 mx-1">
+                            <div class="col-md-12">
+                                <h3 class="pb-3 color-theme"><b>ADDITIONAL INFO</b></h3>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Launching in (brands associated)
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Launching_in_brands_associated__c" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Current year Volume
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Current_year_Volume__c" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Existing product portfolio of the compny
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Existing_product_portfolio_of_the_compny__c" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Brands
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Brands__c" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Current year Volume Unit
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Current_year_Volume_Unit__c" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+
+                        <div class="row">                                
+                            <div class="col-md-12">
+                                <h3 class="pb-3 color-theme"><b>AUDIT TRAIL</b></h3>
+                            </div>
+                        </div>
+                        <div class="row"> 
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Account Owner
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Owner.FirstName" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Business Head
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.User__r.Name" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        <div class="row mt-5">
+                            <div class="col-md-12">
+                                <h3 class="pb-3 color-theme"><b>ACCOUNT PORTFOLIO</b></h3>
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Number of Total Opportunity
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Number_of_Total_Opportunity__c" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Potential Opportunity
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Potential_Opportunity__c" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Number of open opportunity
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Number_of_open_opportunity__c" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Won opportunity value product wise
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Won_opportunity_value_product_wise__c" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Number Of Won Opportunity
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Number_Of_Won_Opportunity__c" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Number Of Won Opportunity New
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Number_Of_Won_Opportunity_new__c" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Number of closed opportunity
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Number_of_closed_opportunity__c" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Win rate
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Win_rate__c" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Closed Opportunity - Value
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Closed_Opportunity_Value__c" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">Number of won opportunity partially exec
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Number_of_won_opportunity_partially_exec__c" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Partially executed actual order value vs
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Partially_executed_actual_order_value_vs__c" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+
+                        <div class="row mt-5">
+                            <div class="col-md-12">
+                                <h3 class="pb-3 color-theme"><b>OPPORTUNITY RELATED</b></h3>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">Total Team Members To Be Added
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.Total_Team_Members__c" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">FLAVOR Opportunity Closed Value
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.FLAVOR_Opportunity_Closed_Value__c" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3">
+                            <label class="font-if">COLOR Opportunity Closed Value
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.COLOR_Opportunity_Closed_Value__c" ng-disabled="disbledFields"/>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="font-if">PLANT BASED Opportunity Closed Value
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.PLANT_BASED_Opportunity_Closed_Value__c" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mt-3 mb-3">
+                            <label class="font-if">SPD Opportunity Closed Value
+                            </label>
+                            
+                            <input class="form-control" type="text" ng-model="accDetails.SPD_Opportunity_Closed_Value__c" ng-disabled="disbledFields"/>
+                        </div>
+                        </div>
+                        
+                    </div>                   
+
+                <div class="row mt-5 mx-5" id="sampleDetailtab" ng-show="showSamplePage">
+                    <div class="col-md-12">
+                        <div class="col-md-4" style="width:100%;">
+                            <button class="blue-bordered-btn float-end me-2" ng-click="generateInvoice()" type="button">
+                                Generate Invoice</button>
+                        </div>
+                        <div style="overflow-x: auto; width: 100%;">
+                            <table class="table table-responsive">
+                                <h2 style="color:crimson;"><i class="fa fa-user" style="font-size:30px;color:red"></i>&nbsp;&nbsp;<b><u>{{accDetails.Name}}</u></b></h2>
+                                <thead>
+                                    <tr>
+                                        <td>Select</td>
+                                        <td>S.No.</td>
+                                        <!-- <th nowrap="true">Name</th> -->
+                                        <th nowrap="true">Sample ID</th>
+                                        <th nowrap="true">Status</th>
+                                        <th nowrap="true">Shipping Type</th>
+                                        <th nowrap="true">Sample Requested By</th>
+                                        <th nowrap="true">Record Type</th>
+                                        <th nowrap="true">Sales User</th>
+                                        <th nowrap="true">Created Date</th>
+                                        <th nowrap="true">Sample Released Date</th>
+                                        <th nowrap="true">Pending Products</th>
+                                        <th nowrap="true">Submitted Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="sample in samples3">
+                                        <td><input type="checkbox" ng-model="sample.selected" ng-change="onClickOfSample(sample.Id,$index)" /></td>
+                                        <td>{{$index+1}}</td>
+                                        <!-- <td ng-if="sample.Record_Type_Name__c == 'Sample'" style="cursor:pointer;" nowrap="true"><a href="#" ng-click="onClickOpenSampleDetailPage(sample.Id)">{{sample.Sample_Name__c}}</a></td> -->
+                                        <td ng-if="sample.Record_Type_Name__c == 'Sample'" style="cursor:pointer;" nowrap="true"><a href="#" ng-click="onClickOpenSampleDetailPage(sample.Id)">{{sample.Name}}</a></td>
+                                        <td ng-if="sample.Record_Type_Name__c == 'Project'" nowrap="true">{{sample.Project_Name__c}}</td>
+                                        <td nowrap="true">{{sample.Status__c}}</td>
+                                        <td nowrap="true">{{sample.Shipping_Type__c}}</td>
+                                        <!--td>{{sample.Product_Family__c}}</td-->
+                                        <td nowrap="true">{{sample.Sample_Requested_by__c}}</td>
+                                        <td nowrap="true">{{sample.Record_Type_Name__c}}</td>
+                                        <td nowrap="true">{{sample.Owner.Name}}</td>
+                                        <td nowrap="true">{{sample.CreatedDate | date:'yyyy-MM-dd'}}</td>
+                                        <td nowrap="true">{{sample.Release_Date_Time__c | date:'yyyy-MM-dd'}}</td>
+                                        <td nowrap="true">
+                                            <ul>
+                                                <li ng-repeat="sli in sample.Sample_Line_Items__r" style="color: red;margin-left:13px;" ng-if="sample.Sample_Line_Items__r != undefined">{{sli.Product_Name__c}}</li>
+                                                <li style="color: blue;" ng-if="sample.Sample_Line_Items__r == undefined">No Pending Products</li>
+                                            </ul>
+                                        </td>
+                                        <td nowrap="true">{{sample.Sample_Submitted_Date__c | date:'yyyy-MM-dd'}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button class="paginationButton" ng-click="handleNext()">Next &#10230;</button>
+                                <button class="paginationButton" ng-click="handlePrevious('Sample')">&#10229; Previous</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-5 mx-5" id="sampleDetailtab" ng-show="showFilePage">
+                    <div class="col-md-12" ng-show="fileAvailable">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <td>S.No.</td>
+                                    <th>File Name</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="file in filesList">
+                                    <td>{{$index+1}}</td>
+                                    <td>{{file.Name}}</td>
+                                    <td><button class="viewButton" ng-click="handleView(file.Id)">View</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!--div class="row">
+                            <div class="col-md-12">
+                                <button class="paginationButton" ng-click="handleNext()">Next &#10230;</button>
+                                <button class="paginationButton" ng-click="handlePrevious('Sample')">&#10229; Previous</button>
+                            </div>
+                        </div-->
+                    </div>
+                    <div ng-show="noFilesFound">
+                        <apex:image value="{!URLFOR($Resource.noFileFound,'')}" style="display: block; margin-left: auto; margin-right: auto; width: 30%;"/>
+                    </div>
+                </div>
+                
+                <div class="row tabContentCustDetPage" ng-show="showComments">
+            <div class="col-md-8">
+                <h3 class="pb-3 color-theme"><b>Comments :</b></h3>
+            </div>
+                <div class="col-md-4">
+                    <button class="blue-btn float-end me-2 mb-5" ng-click="openPopUp()" type="button">
+                        New</button>
+                    </div>
+            <div class="col-md-12">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>S.No.</th>
+                            <th>Comment No.</th>
+                            <th>Comment</th>
+                            <th>Commentted By</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="com in listOfComments">
+                            <td>{{$index+1}}</td> 
+                            <td>{{com.Name}}</td>
+                            <td>{{com.Comment__c}}</td>
+                            <td>{{com.Comment_By__r.Name}}</td>
+                            <td><button type="button" data-bs-dismiss="modal" style="background:green;" class="blue-btn" ng-click="openReplyPopUp($index,com.Id)"><i class="fa fa-reply" aria-hidden="true"></i>Reply</button>
+                                <div class="modal" id="flipFlop2{{$index}}">
+                                        <div class="modal-dialog" style="min-width:1000px">
+                                            <div class="modal-content">
+                                        
+                                            <div class="modal-header">
+                                                <h4 class="modal-title"><div class="d-flex justify-content-center" style="background:unset;">
+                                                <h3 class="color-theme2" style="color:green;">
+                                                    <b>Add Reply</b>
+                                                </h3>
+                                            </div></h4> 
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                        
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        {{cmnt.Reply__c}}
+                                                <ng-ckeditor ng-model="cmnt.Reply__c" ng-config="config" ></ng-ckeditor>
+                                            </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col-md-12">
+                                                <button type="button" data-bs-dismiss="modal" class="blue-btn float-end" ng-click="saveReply()">Save</button>
+                                            </div>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="button" data-bs-dismiss="modal" style="background:rgb(179, 69, 5))" class="blue-btn" ng-click="openViewReplyPopUp($index,com.Id)">View Reply</button>
+                                <div class="modal" id="viewReplyBox{{$index}}">
+                                    <div class="modal-dialog" style="min-width:1000px">
+                                        <div class="modal-content">
+                                    
+                                        <div class="modal-header">
+                                            <h4 class="modal-title"><div class="d-flex justify-content-center" style="background:unset;">
+                                            <h3 class="color-theme2" style="color:green;">
+                                                <b>View Reply</b>
+                                            </h3>
+                                        </div></h4> 
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                    
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>S.No.</th>
+                                                                <th>Comment No.</th>
+                                                                <th>Comment</th>
+                                                                <th>Commentted By</th>
+                                                                <!--th>Action</th-->
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr ng-repeat="com in listOfReplies">
+                                                                <td>{{$index+1}}</td> 
+                                                                <td>{{com.Name}}</td>
+                                                                <td>{{com.Reply__c}}</td>
+                                                                <td>{{com.Comment_By__r.Name}}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                        </div>
+                                        </div>
+                                        <!--div class="row mt-3">
+                                            <div class="col-md-12">
+                                            <button type="button" data-bs-dismiss="modal" class="blue-btn float-end" ng-click="saveReply()">Save</button>
+                                        </div>
+                                        </div-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+                            <div class="row">
+                <div class="col-md-12">
+                    <button class="paginationButton" ng-click="handleNext()">Next &#10230;</button>
+                    <button class="paginationButton" ng-click="handlePrevious('Comments')">&#10229; Previous</button>
+                </div>
+            </div>
+        </div>
+                
+                <div class="modal" id="flipFlop">
+                                        <div class="modal-dialog" style="min-width:1000px">
+                                            <div class="modal-content">
+                                        
+                                            <div class="modal-header">
+                                                <h4 class="modal-title"><div class="d-flex justify-content-center" style="background:unset;">
+                                                <h3>
+                                                    <b>Add Comment</b>
+                                                </h3>
+                                            </div></h4> 
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                        
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                <ng-ckeditor ng-model="come.Comment__c" ng-config="config" ></ng-ckeditor>
+                                            </div>
+                                            </div>
+                                            <div class="row mt-3">
+                                                <div class="col-md-12">
+                                                <button type="button" data-bs-dismiss="modal" class="blue-btn float-end" ng-click="saveComment()">Save</button>
+                                            </div>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                
+                
+<div class="row">
+<div class="col-md-6 mt-3" ng-show="showBackButon">
+                    <button class="blue-btn float-end me-2 mb-5" ng-click="back()" type="button">
+                        <i class="fa-solid fa-arrow-left me-2"></i>Back</button>
+    <button ng-if="showSaveButton == true" class="blue-btn float-end me-2 mb-5" style="background: green;" ng-click="saveAccDetails()" type="button">
+                        Save</button>
+                </div>
+                </div>               
+    </div>
+    <div class="row box-shadow-2" ng-show="showProfile" style="margin-top:10rem!important;margin-right:24rem!important;margin-left:24rem!important;">
+        <div class="row mt-5 mx-1">
+            <div class="col-md-12">
+                <h3 class="pb-3 color-theme"><b>EDIT PROFILE</b></h3>
+            </div>
+        </div>
+        <div class="col-md-6 mt-3">
+            <label class="font-if">First Name
+            </label>
+            <input class="form-control" type="text" ng-model="conDetails.FirstName" ng-disabled="true"/>
+        </div>
+        <div class="col-md-6 mt-3">
+            <label class="font-if">Last Name
+            </label>
+            <input class="form-control" type="text" ng-model="conDetails.LastName" ng-disabled="true"/>
+        </div>
+        <div class="col-md-6 mt-3">
+            <label class="font-if">Email
+            </label>
+            <input class="form-control" type="text" ng-model="conDetails.Email" ng-disabled="true"/>
+        </div>
+        <div class="col-md-6 mt-3">
+            <label class="font-if">Phone
+            </label>
+            <input class="form-control" type="text" ng-model="conDetails.MobilePhone" number="conDetails.MobilePhone" maxlength="10" ng-disabled="disabled"/>
+        </div>
+        <div class="col-md-6 mt-3 mb-5">
+            <div style="position: relative;">
+                <label class="font-if">Password
+                </label>
+                <input class="form-control" type="password" id="psw" ng-model="conDetails.Password__c" ng-disabled="disabled"/>
+                <i class="fa fa-eye eye-icon" style="position:absolute;right:15px;top:40px;" ng-click="showHideLoginPassword('psw')"></i>
+            </div>
+            
+        </div>
+        <div class="col-md-6 mt-3 mb-5" id="updateCancelBtn">
+            <button class="blue-btn float-end" ng-click="saveDetails()" type="button">
+                <i class="fa-solid fa-check me-2"></i>Update</button>
+            <button class="blue-bordered-btn float-end me-2" ng-click="backProfile()" type="button">
+                <i class="fa-solid fa-arrow-left me-2"></i>Cancel</button>
+                <button class="blue-btn float-end me-2" ng-click="editProfile()" type="button">
+                    <i class="fa-solid fa-pencil me-2"></i>Edit</button>
+        </div>
+    </div>
+        </body>
+
+        <script>
+            var userHashId = '{!$CurrentPage.parameters.id}';
+            var accId = '{!$CurrentPage.parameters.accId}';
+            var transportationTerms = JSON.parse('{!transportationTerms}');
+
+            angular.module('number', [])
+        .directive('number', function () {
+            return {
+                require: 'ngModel',
+                restrict: 'A',
+                link: function (scope, element, attrs, ctrl) {
+                    ctrl.$parsers.push(function (input) {
+                        if (input == undefined) return ''
+                        var inputNumber = input.toString().replace(/[^0-9]/g, '');
+                        if (inputNumber != input) {
+                            ctrl.$setViewValue(inputNumber);
+                            ctrl.$render();
+                        }
+                        return inputNumber;
+                    });
+                }
+            };
+        });
+
+            var app = angular.module('customerDet_App', ['ng.ckeditor','number']);
+            app.controller('customerDet_ctrl', function ($scope,$sce){
+                debugger;
+                $scope.disabled = true;
+                $scope.transportationTerms = transportationTerms;
+                $scope.accId = accId;
+                $scope.showDetailPage = true;
+                $scope.showSamplePage = false;
+                $scope.showComments = false;
+                $scope.showBackButon=true;
+                $scope.showProfile=false;
+                $scope.showTabBar=true;
+                $scope.listOfComments = [];
+                $scope.cmnt = {"Reply__c":""};
+                $scope.disbledFields = true;
+                $scope.showSaveButton = false;
+                $scope.currentPage = 1;
+                $scope.pageSize = 10;
+                $scope.totalPages;
+
+                $scope.getCustomerDetail = function(){
+                    debugger;
+                    $scope.showSpinner = true;
+                    OperationsPortalController.getCustomerDetail(accId,userHashId,function(result,event){
+                        debugger;
+                        if(event.status && result){
+                            debugger;
+                            $scope.conRec = result.conRec;
+                            $scope.conDetails = result.conRec;  
+                            $scope.contactName = result.conRec.Name;
+                            $scope.teamType = result.conRec.Sample_Assignment_Team__r.Team_Type__c;
+                            $scope.filesList = result.filesList;
+                            if(result.filesList != undefined && result.filesList != null && result.filesList.length>0){
+                                $scope.fileAvailable = true;
+                                $scope.noFilesFound = false;
+                            }else{
+                                $scope.fileAvailable = false;
+                                $scope.noFilesFound = true;
+                            }
+                            $scope.accDetails = result.accRecord;
+                            if(result.accRecord.Next_Follow_up_Date__c != null){
+                                $scope.accDetails.Next_Follow_up_Date__c = new Date(result.accRecord.Next_Follow_up_Date__c);
+                            }
+                            $scope.samples = result.listOfSamples;
+                            $scope.samples2 = result.listOfSamples;
+                            $scope.listOfSamples = result.listOfSamples;
+                            
+                            $scope.totalRecordsSample = $scope.samples.length;
+                            $scope.totalPagesSample = Math.ceil($scope.totalRecordsSample / $scope.pageSize);
+                            
+                            if(result.accRecord.Comments__r != undefined){
+                                $scope.listOfComments = result.accRecord.Comments__r;
+                            if($scope.listOfComments.length > 0){
+                                for(var i=0;i<$scope.listOfComments.length;i++){
+                                    if($scope.listOfComments[i].Comment__c != undefined || $scope.listOfComments[i].Comment__c != ''){
+                                        $scope.listOfComments[i].Comment__c = angular.element('<textarea>').html($scope.listOfComments[i].Comment__c).text(); // Decode HTML entities
+                                            var regex = /(<([^>]+)>|&)/ig; // Updated regex to match HTML tags and "&"
+                                            $scope.listOfComments[i].Comment__c = $scope.listOfComments[i].Comment__c.replace(regex, ''); // Remove HTML tags and "&" from the decoded text
+                                            $scope.listOfComments[i].Comment__c = $sce.trustAsHtml($scope.listOfComments[i].Comment__c);
+                                        // $scope.listOfComments[i].Comment__c = $scope.listOfComments[i].Comment__c ? $scope.listOfComments[i].Comment__c.replace(/&amp;/g,'&').replaceAll('&amp;amp;','&').replaceAll('&amp;gt;','>').replaceAll('&lt;','<').replaceAll('lt;','<').replaceAll('&gt;','>').replaceAll('gt;','>').replaceAll('&amp;','&').replaceAll('amp;','&').replaceAll('&quot;','\'').replaceAll('&<p&>','').replaceAll('&</p&>','') : $scope.listOfComments[i].Comment__c;
+                                    }
+                                }
+                            }
+                            $scope.listOfComments2 = result.listOfComments;
+                            $scope.totalRecords = $scope.listOfComments.length;
+                            $scope.totalPages = Math.ceil($scope.totalRecords / $scope.pageSize);
+                                $scope.$apply();
+                            }else{
+                                //$scope.listOfComments.push({"Comment__c":""});
+                            }
+                            $scope.paginateData();
+                            $scope.showSpinner = false;
+                            $scope.$apply();
+                        }
+                    })
+                }
+                $scope.getCustomerDetail();
+
+                $scope.editProfile = function(){
+                    debugger;
+                    $scope.disabled = false;
+                }
+
+                $scope.showHideLoginPassword = function(controlid){
+                    debugger;
+                    var x = document.getElementById(controlid);
+                    if (x.type === "password") {
+                        x.type = "text";
+                    } else {
+                        x.type = "password";
+                    }
+                }
+
+                $scope.showProfileDiv=function(){
+                debugger;
+                $scope.showDetailPage=false;
+                $scope.showSamplePage=false;
+                $scope.showFilePage = false;
+                $scope.showComments = false;
+                $scope.showBackButon=false;
+                $scope.showTabBar=false;
+                $scope.showProfile = true;
+            }
+
+            $scope.backProfile = function(){
+                debugger;
+                //$scope.showListViewOfSLI=true;
+                //$scope.showDetailPageSLI=false;
+                var detailTab = document.getElementById("DetailTab");
+                    detailTab.classList.add("selectedTab");
+                    var sampleTab = document.getElementById("SampleTab");
+                    sampleTab.classList.remove("selectedTab");
+                    // var FilesTab = document.getElementById("FilesTab");
+                    // FilesTab.classList.remove("selectedTab");
+                    if($scope.conRec.Role__c == 'Operation Team'){
+                        var CommentsTab = document.getElementById("CommentsTab");
+                    CommentsTab.classList.remove("selectedTab");   
+                    }
+
+                $scope.showProfile = false;
+                $scope.showDetailPage=true;
+                $scope.showBackButon=true;
+                $scope.showTabBar=true;
+            }
+
+            $scope.saveDetails = function(){
+                debugger;
+                if($scope.conDetails.MobilePhone != undefined || $scope.conDetails.MobilePhone != ""){
+                    if($scope.conDetails.MobilePhone.length < 10){
+                        swal("error", "Phone number should be of 10 digit.","error");
+                        return;
+                    }
+                }
+                
+                delete($scope.conDetails['Account__r']);
+                $scope.showSpinner = true;
+                OperationsPortalController.updateProfile($scope.conDetails,function(result,event){
+                    debugger;
+                    if(event.status && result){
+                        $scope.showSpinner = false;
+                        swal("success", "Your profile has been updated.","success");
+                        $scope.backProfile();
+                        $scope.$apply();
+                    }
+                })
+            }
+
+            $scope.LogoutApplicant=function(){  
+                $scope.showSpinner = true;      
+                OperationsPortalController.LogoutApplicant(userHashId, function (result, event) {
+                debugger
+                console.log(result);
+                console.log(event);
+                if(event.status){
+                    $scope.res=result;
+                    $scope.redirect();
+                    $scope.$apply();
+                }
+        });   
+            }
+
+            $scope.redirect = function(){
+                debugger;
+                var sitePrefix = window.location.href.includes('/apex') ? '/apex' : '/operations';
+                setTimeout(function() {window.location.replace(window.location.origin + sitePrefix )}, 3000);
+            }
+
+                $scope.onClickOpenSampleDetailPage = function(sampleId){
+                    debugger;
+                    $scope.sampleId = sampleId;
+                    var sitePrefix = window.location.href.includes('/apex') ? '/apex' : '/operations/SampleDetailPage';
+                    //window.location.replace(window.location.origin + sitePrefix +'?id='+userHashId+'&sampleId='+ $scope.sampleId);
+                    window.open(window.location.origin + sitePrefix +'?id='+userHashId+'&sampleId='+ $scope.sampleId, '_blank')
+                    $scope.$apply();
+                }
+                
+                $scope.paginateData = function() {
+                debugger;
+                $scope.listOfSamples = [];
+                    const startIndex = ($scope.currentPage - 1) * $scope.pageSize;
+                    const endIndex = startIndex + $scope.pageSize;
+                    $scope.listOfComments3 = $scope.listOfComments.slice(startIndex, endIndex);
+                    $scope.samples3 = $scope.samples.slice(startIndex, endIndex);
+                    $scope.listOfSamples  =  $scope.samples3;
+
+            }
+                
+                $scope.handleNext = function(){
+                    debugger;
+                    if ($scope.currentPage < $scope.totalPages){
+                        $scope.currentPage += 1;
+                        $scope.paginateData($scope.listOfComments);
+                    }
+                    if ($scope.currentPage < $scope.totalPagesSample){
+                        $scope.currentPage += 1;
+                        $scope.paginateData($scope.samples);
+                    }
+                }
+            
+            $scope.handlePrevious = function(name){
+                    debugger;
+                    if ($scope.currentPage > 1){
+                        this.currentPage -= 1;
+                        if(name == 'Comments'){
+                            this.paginateData(this.listOfComments);
+                        }else if(name == 'Sample'){
+                            this.paginateData(this.samples);
+                        }else{
+                        }
+                        //this.paginateData(this.listOfComments);
+                    }
+                }
+            
+            $scope.handleView = function(fileId){
+                debugger;
+                $scope.showSpinner = true;
+                OperationsPortalController.getFileRecordUnderAccount(fileId, function(result,event){
+                    if(event.status && result){
+                    $scope.invoiceToDisplay = result;
+                        $scope.contentVersionId = result[0].ContentVersionId;
+                        $scope.showSpinner = false;
+                        $scope.filePreviewHandler(result);
+                    }
+                    })
+                $scope.$apply();
+            }
+            
+            $scope.filePreviewHandler = function(fileContent){
+debugger;
+$scope.selectedFile = fileContent;
+
+console.log('selectedFile---', $scope.selectedFile);
+
+$('#file_frame').attr('src', $scope.selectedFile[0].DistributionPublicUrl);
+
+var myModal = new bootstrap.Modal(document.getElementById('filePreview'))        
+myModal.show('slow') ;
+$scope.$apply();
+
+//.ContentDistribution.DistributionPublicUrl
+}
+
+                $scope.onClickOfDetailPage = function(){
+                    debugger;
+                    var detailTab = document.getElementById("DetailTab");
+                    detailTab.classList.add("selectedTab");
+                    // var sampleTab = document.getElementById("SampleTab");
+                    // sampleTab.classList.remove("selectedTab");
+                    // var FilesTab = document.getElementById("FilesTab");
+                    // FilesTab.classList.remove("selectedTab");
+                    if($scope.conRec.Role__c == 'Operation Team'){
+                        var CommentsTab = document.getElementById("CommentsTab");
+                    CommentsTab.classList.remove("selectedTab");   
+                    }
+                    $scope.showDetailPage = true;
+                    $scope.showSamplePage = false;
+                    $scope.showComments = false;
+                    $scope.showFilePage = false;
+                    $scope.showBackButon=true;
+                    $scope.showProfile=false;
+                    $scope.showTabBar=true;
+                }
+                $scope.onClickOfSamplePage = function(){
+                    debugger;
+                    var detailTab = document.getElementById("DetailTab");
+                    detailTab.classList.remove("selectedTab");
+                    var sampleTab = document.getElementById("SampleTab");
+                    sampleTab.classList.add("selectedTab");
+                    // var FilesTab = document.getElementById("FilesTab");
+                    // FilesTab.classList.remove("selectedTab");
+                    if($scope.conRec.Role__c == 'Operation Team'){
+                        var CommentsTab = document.getElementById("CommentsTab");
+                    CommentsTab.classList.remove("selectedTab");
+                    }
+                    $scope.showSamplePage = true;
+                    $scope.showDetailPage = false;
+                    $scope.showComments = false;
+                    $scope.showFilePage = false;
+                    $scope.showBackButon=true;
+                    $scope.showProfile=false;
+                    $scope.showTabBar=true;
+                }
+                
+                $scope.onClickOfFilesPage = function(){
+                    debugger;
+                    var detailTab = document.getElementById("DetailTab");
+                    detailTab.classList.remove("selectedTab");
+                    var sampleTab = document.getElementById("SampleTab");
+                    sampleTab.classList.remove("selectedTab");
+                    // var FilesTab = document.getElementById("FilesTab");
+                    // FilesTab.classList.add("selectedTab");
+                    if($scope.conRec.Role__c == 'Operation Team'){
+                        var CommentsTab = document.getElementById("CommentsTab");
+                    CommentsTab.classList.remove("selectedTab");
+                    }
+                    $scope.showSamplePage = false;
+                    $scope.showDetailPage = false;
+                    $scope.showComments = false;
+                    $scope.showFilePage = true;
+                    $scope.showBackButon=true;
+                    $scope.showProfile=false;
+                    $scope.showTabBar=true;
+                }
+
+                $scope.customerPage = function(){
+                    debugger;
+                    var sitePrefix = window.location.href.includes('/apex') ? '/apex' : '/operations/SampleLineItemDetailPage';
+                    window.location.replace(window.location.origin + sitePrefix +'?id='+ userHashId); 
+                }
+
+                $scope.back = function(){
+                    debugger;
+                    var sitePrefix = window.location.href.includes('/apex') ? '/apex' : '/operations/SampleLineItemDetailPage';
+                    window.location.replace(window.location.origin + sitePrefix +'?id='+ userHashId);
+                }
+                
+                $scope.onClickOfComments = function(){
+                    debugger;
+                    var detailTab = document.getElementById("DetailTab");
+                    detailTab.classList.remove("selectedTab");
+                    // var sampleTab = document.getElementById("SampleTab");
+                    // sampleTab.classList.remove("selectedTab");
+                    // var FilesTab = document.getElementById("FilesTab");
+                    // FilesTab.classList.remove("selectedTab");
+                    if($scope.conRec.Role__c == 'Operation Team'){
+                        var CommentsTab = document.getElementById("CommentsTab");
+                    CommentsTab.classList.add("selectedTab");
+                    }
+                    $scope.showSamplePage = false;
+                    $scope.showDetailPage = false;
+                    $scope.showComments = true;
+                    $scope.showFilePage = false;
+                    $scope.showBackButon=true;
+                    $scope.showProfile=false;
+                    $scope.showTabBar=true;
+                }
+                
+                    $scope.openPopUp = function () {
+                debugger;
+                var myModal = new bootstrap.Modal(document.getElementById('flipFlop'));
+                myModal.show('slow');
+                $scope.$apply();
+            }
+                
+                $scope.openReplyPopUp = function(index,comId){
+                    debugger;
+                    $scope.comId = comId;
+                    var myModal = new bootstrap.Modal(document.getElementById('flipFlop2' + index));
+                    myModal.show('slow');
+                    $scope.$apply();
+                }
+
+                $scope.openViewReplyPopUp = function(index,comId){
+                    debugger;
+                    $scope.showSpinner = true;
+                    $scope.comId = comId;
+                    OperationsPortalController.getReplies(comId,function(result,event){
+                    if(event.status && result){
+                        $scope.listOfReplies = result;
+                        if($scope.listOfReplies != undefined){
+                            for(var i=0;i<$scope.listOfReplies.length;i++){
+                                if($scope.listOfReplies[i].Reply__c != undefined || $scope.listOfReplies[i].Reply__c != ''){
+                                    $scope.listOfReplies[i].Reply__c = angular.element('<textarea>').html($scope.listOfReplies[i].Reply__c).text(); // Decode HTML entities
+                                    var regex = /(<([^>]+)>|&)/ig; // Updated regex to match HTML tags and "&"
+                                    $scope.listOfReplies[i].Reply__c = $scope.listOfReplies[i].Reply__c.replace(regex, ''); // Remove HTML tags and "&" from the decoded text
+                                    $scope.listOfReplies[i].Reply__c = $sce.trustAsHtml($scope.listOfReplies[i].Reply__c);
+                                }
+                            }
+                        }
+                        $scope.showSpinner = false;
+                        var myModal = new bootstrap.Modal(document.getElementById('viewReplyBox' + index));
+                        myModal.show('slow');
+                        $scope.$apply();
+                    }
+                    })
+                }
+                
+                $scope.saveComment = function(){
+                    debugger;
+                    OperationsPortalController.saveComment2($scope.come,userHashId,accId,function(result,event){
+                        debugger;
+                        if(event.status && result){
+                            swal("success", "Comment added successfully.","success");
+                            $scope.come.Comment__c = "";
+                            $scope.getCustomerDetail();
+                            $scope.$apply();
+                        }
+                    })
+                }
+                
+                $scope.saveReply = function(){
+                    debugger;
+                    OperationsPortalController.saveReply($scope.cmnt,userHashId,$scope.comId,function(result,event){
+                        debugger;
+                        if(event.status && result){
+                            swal("success", "Reply added successfully.","success");
+                            $scope.cmnt.Reply__c = "";
+                            $scope.getCustomerDetail();
+                            $scope.$apply();
+                        }
+                    })
+                }
+                
+                $scope.editCustomerRec = function(){
+                    debugger;
+                    $scope.disbledFields = false;
+                    $scope.showSaveButton = true;
+                }
+                
+                $scope.saveAccDetails = function(){
+                    debugger;
+                    var year=0;
+                    var month=0;
+                    var day=0;
+                    if($scope.accDetails.Next_Follow_up_Date__c!=undefined && $scope.accDetails.Next_Follow_up_Date__c!=''){
+                        year = $scope.accDetails.Next_Follow_up_Date__c.getUTCFullYear();
+                        month = $scope.accDetails.Next_Follow_up_Date__c.getUTCMonth()+1;
+                        day = $scope.accDetails.Next_Follow_up_Date__c.getDate();
+                    }
+                    delete ($scope.accDetails.Next_Follow_up_Date__c);
+                    delete ($scope.accDetails['Comments__r']);
+                    delete ($scope.accDetails['Opportunities']);
+                    OperationsPortalController.saveAccDetails($scope.accDetails,year,month,day,function(result,event){
+                        debugger;
+                        if(event.status && result){
+                            debugger;
+                            swal("success", "Customer Details have been updated successfully.","success");
+                        }
+                        $scope.$apply();
+                    })
+                }
+
+        $scope.listOfSampleIds = [];
+        $scope.samples = [];
+        $scope.onClickOfSample = function(sampleId,index){
+            debugger;
+            // $scope.listOfSamples - total records
+            if($scope.listOfSamples[index].selected == true){
+                debugger;
+                $scope.listOfSampleIds.push(sampleId);
+                $scope.samples.push($scope.listOfSamples[index]);
+                console.log('sampleids selection-->',JSON.stringify( $scope.listOfSampleIds));
+            }else{
+                const index = $scope.listOfSampleIds.indexOf(sampleId);
+                 if (index > -1) {
+                    $scope.listOfSampleIds.splice(index, 1);
+                    $scope.samples.splice(index, 1);
+                    console.log('sampleids deselect-->',JSON.stringify( $scope.listOfSampleIds));
+                }
+            }
+        }
+
+        $scope.showCustomerssPage = function(){
+                var sitePrefix = window.location.href.includes('/apex') ? '/apex' : '/operations/SampleLineItemDetailPage';
+                window.location.replace(window.location.origin + sitePrefix +'?id='+userHashId);
+            }
+
+        $scope.DomesticSamples = [];
+        $scope.ExportSamples = [];
+        
+                $scope.generateInvoice = function(){
+                    $scope.showSpinner = true;
+                    debugger;
+                    
+                    for(var i=0;i<$scope.samples.length;i++){
+                        
+                        if($scope.samples[i].Shipping_Type__c == 'Domestic'){
+                            $scope.DomesticSamples.push($scope.samples[i]);
+                        }else if($scope.samples[i].Shipping_Type__c == 'Export'){
+                            $scope.ExportSamples.push($scope.samples[i]);
+                        }
+                        
+                        for(var j=0; j<$scope.listOfSampleIds.length;j++){                    
+                            
+                            if($scope.listOfSampleIds[j] == $scope.samples[i].Id ){
+                                
+                                if($scope.samples[i].Shipping_Type__c == '' || $scope.samples[i].Shipping_Type__c == undefined){
+                                    swal("info", "Shipping type is Required","info"); 
+                                    $scope.showSpinner = false;
+                                    return;
+                                }                        
+                            }   
+                        } 
+                    }
+                    
+                    /*  if($scope.DomesticSamples.length > 0 && $scope.ExportSamples.length > 0){
+                swal("info", "Please select same shipping type to generate invoice.","info");
+                return;
+            } */
+                    OperationsPortalController.generateInvoice($scope.listOfSampleIds,function(result,event){
+                        debugger;
+                        if(event.status && result){
+                            debugger;
+                            //  $scope.sampleRecId = result;
+                            if(result == 'success'){
+                                swal("success", "Invoice generated for selected Samples.","success");
+                                $scope.showSpinner = false;
+                                window.location.reload();
+                                
+                                //window.location.href = 'https://www.symega.com';
+                            }else{
+                                swal("error", result,"error");
+                            }
+                            //swal("success", "Invoice generated for selected Samples.","success");
+                            //     OperationsPortalController.getGeneratedInvoice(result, function(result,event){
+                            //     if(event.status && result){
+                            //     $scope.invoiceToDisplay = result;
+                            //         $scope.contentVersionId = result[0].ContentVersionId;
+                            //         $scope.showSpinner = false;
+                            //         $scope.filePreviewHandler(result);
+                            //     }
+                            // })
+                        }
+                        $scope.$apply();
+                    })
+                }
+
+        $scope.saveInvoiceUnderAccount = function(){
+                debugger;
+                if($scope.sampleRecId != null && $scope.sampleRecId != undefined && $scope.sampleRecId != '' && $scope.contentVersionId != null && $scope.contentVersionId != undefined && $scope.contentVersionId != ''){
+                	OperationsPortalController.saveInvoiceUnderAccount($scope.sampleRecId, $scope.contentVersionId, function(result,event){
+                    	debugger;
+                        if(event.status && result == 'SUCCESS'){
+                        	swal("success", "Invoice saved under Account for selected Samples.","success");
+                            $scope.getCustomerDetail();
+                            $('#filePreview').modal('toggle');
+                            $scope.$apply();
+                        }
+                    })
+                }else{
+                	swal("info", "Some Data is Missing","info");    
+                }
+                }
+    })
+        </script>
+</html>
+</apex:page>
